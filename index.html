@@ -1,0 +1,3341 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="artifact-type" content="narrative">
+<meta name="design-style" content="canopy">
+<title>The Magical Weather Journey — Interactive English Storybook</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+
+  /* Canopy base surfaces */
+  --background: #faf6ef;
+  --surface-container-low: #f0eae0;
+  --surface-container: #e8e0d2;
+  --surface-container-high: #ddd3c2;
+
+  /* Ink */
+  --on-surface: #2a302b;
+  --on-surface-variant: #4a524b;
+
+  /* Lines */
+  --outline: #737872;
+  --outline-variant: #cbc5b8;
+
+  /* Accents */
+  --primary: #366948;
+  --on-primary: #ffffff;
+  --primary-container: #d8efe0;
+  --on-primary-container: #1f4d30;
+  --secondary: #5c635c;
+  --tertiary: #8f5822;
+  --tertiary-container: #f2d4a7;
+  --on-tertiary-container: #6e3f0c;
+  --error: #b83230;
+  --on-error: #ffffff;
+
+  /* Semantic & Focus */
+  --positive: #2d7a47;
+  --warning: #b36b19;
+  --focus: #366948;
+
+  /* Data series */
+  --data-1: #366948;
+  --data-2: #8f5822;
+  --data-3: #a85438;
+  --data-4: #4b6b78;
+  --data-context: #b5b0a3;
+
+  /* Storybook Watercolor Weather Palette */
+  --sky-day: #a7d5e8;
+  --sky-zenith: #73b2d2;
+  --sun-gold: #f4be44;
+  --sun-glow: #fce8a6;
+  --cream-paper: #fdfaf3;
+  --parchment-edge: #e7dcc8;
+  --meadow-light: #9dc27b;
+  --meadow-mid: #6b9b5e;
+  --meadow-deep: #3d6d47;
+  --dusty-pink: #d98e8e;
+  --blossom-pink: #f1c7c4;
+  --muted-orange: #d98348;
+  --lavender: #9f92c7;
+  --lavender-soft: #dcd6ee;
+  --rain-sky: #7b93a8;
+  --rain-deep: #486075;
+  --rain-drop: #5fa3cc;
+  --storm-sky: #334152;
+  --storm-cloud: #4c596b;
+  --lightning-gold: #ffe97d;
+  --snow-sky: #dbe6ef;
+  --snow-hill: #f4f7fa;
+  --fog-mist: #e5e8e6;
+  --wood-warm: #8c5c38;
+  --wood-light: #c49264;
+  --brass: #c9993c;
+  --skin-warm: #f2c9ac;
+  --skin-rosy: #e69d94;
+  --hair-mia: #6b432b;
+  --hair-oliver: #b3662e;
+  --shirt-blue: #4e80a8;
+  --shirt-coral: #d46a64;
+  --ink-dark: #252b26;
+  --paper-shadow: rgb(42 48 43 / 0.08);
+  --book-spine: rgb(72 52 34 / 0.14);
+
+  /* Fonts */
+  --font-headline: 'Literata', serif;
+  --font-body: 'Nunito Sans', sans-serif;
+  --font-label: 'Geist Mono', monospace;
+
+  /* Type scale */
+  --display-size: clamp(2rem, 1.35rem + 2.8vw, 3.25rem);
+  --headline-size: clamp(1.5rem, 1.15rem + 1.4vw, 2.15rem);
+  --subhead-size: clamp(1.125rem, 1.02rem + 0.5vw, 1.35rem);
+  --body-size: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+  /* Radii */
+  --rounded: 0.625rem;
+  --rounded-lg: 1rem;
+  --rounded-book: 1.25rem;
+  --rounded-full: 9999px;
+
+  /* Effects */
+  --shadow-soft: 0 4px 20px rgb(42 48 43 / 0.07);
+  --shadow-soft-hover: 0 8px 28px rgb(42 48 43 / 0.12);
+  --shadow-book: 0 18px 48px rgb(42 48 43 / 0.14), 0 4px 12px rgb(42 48 43 / 0.08);
+  --border-soft: 1px solid rgb(203 197 184 / 0.75);
+  --focus-glow: 0 0 0 3px rgb(54 105 72 / 0.25);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+}
+
+/* Base reset */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  overflow-x: clip;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background);
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: 1.6;
+}
+header { position: static !important; }
+button, input, select, textarea { font-family: inherit; }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Storybook App Shell */
+.app-shell {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-lg) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Top Storybook Ribbon */
+.book-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  background: var(--surface-container-low);
+  border: var(--border-soft);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.ribbon-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.ribbon-title {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+.companion-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--rounded-full);
+}
+
+.ribbon-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.level-toggle {
+  display: inline-flex;
+  background: var(--surface-container);
+  border-radius: var(--rounded);
+  padding: 3px;
+  gap: 2px;
+}
+
+.level-btn {
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: calc(var(--rounded) - 2px);
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+.level-btn.is-active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.icon-btn {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--rounded);
+  border: var(--border-soft);
+  background: var(--cream-paper);
+  color: var(--on-surface);
+  font-size: var(--label-size);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.icon-btn:hover { background: var(--surface-container); }
+.icon-btn.is-on {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: var(--primary);
+}
+
+.sticker-counter-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--rounded);
+  border: 0;
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Chapter Almanac Progress Strip */
+.chapter-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  background: var(--surface-container-low);
+  border-radius: var(--rounded);
+  padding: 8px 14px;
+  border: var(--border-soft);
+}
+.chapter-strip-label {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tertiary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.page-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.page-dot {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: var(--rounded);
+  border: 0;
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.page-dot:hover { background: var(--surface-container); transform: translateY(-1px); }
+.page-dot.is-current {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.page-dot.is-done:not(.is-current) {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+/* Open Storybook Container */
+.storybook-frame {
+  position: relative;
+  background: var(--cream-paper);
+  border-radius: var(--rounded-book);
+  border: 2px solid var(--parchment-edge);
+  box-shadow: var(--shadow-book);
+  overflow: hidden;
+  min-height: 580px;
+}
+
+/* Subtle vintage book spine crease on desktop */
+.storybook-frame::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 28px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--book-spine) 48%, transparent);
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.story-page {
+  display: none;
+  padding: var(--space-lg) var(--space-xl);
+  position: relative;
+  z-index: 1;
+  animation: pageTurnIn var(--dur-long) var(--ease-out);
+}
+.story-page.is-active { display: block; }
+
+@keyframes pageTurnIn {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Two-page storybook spread grid */
+.spread-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+.spread-grid > * { min-width: 0; }
+
+.page-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Typography inside book */
+.kicker {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tertiary);
+  font-weight: 600;
+  margin: 0;
+}
+.page-heading {
+  font-family: var(--font-headline);
+  font-size: var(--headline-size);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--on-surface);
+  margin: 0;
+}
+.cover-title {
+  font-family: var(--font-headline);
+  font-size: var(--display-size);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--on-surface);
+  margin: 0;
+}
+.story-prose {
+  font-size: var(--body-size);
+  line-height: 1.65;
+  color: var(--on-surface-variant);
+  max-width: 62ch;
+  margin: 0;
+}
+.story-prose strong { color: var(--on-surface); }
+
+/* Loam & Leaf cards */
+.card {
+  background: var(--surface-container-low);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-md) var(--space-lg);
+  border: var(--border-soft);
+}
+.card.is-leaf-highlight {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: var(--primary);
+}
+.card.is-ochre {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  border-color: var(--tertiary);
+}
+
+/* Illustrated Canvas / Scene Stage */
+.scene-stage {
+  position: relative;
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  border: 2px solid var(--parchment-edge);
+  background: var(--sky-day);
+  box-shadow: var(--shadow-soft);
+}
+.scene-stage svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Buttons */
+.btn-primary {
+  min-height: 46px;
+  padding: 10px 22px;
+  border-radius: var(--rounded);
+  border: 0;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft-hover); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: var(--rounded);
+  border: var(--border-soft);
+  background: var(--surface-container);
+  color: var(--on-surface);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out);
+}
+.btn-secondary:hover { background: var(--surface-container-high); }
+
+.btn-ochre {
+  min-height: 44px;
+  padding: 8px 18px;
+  border-radius: var(--rounded);
+  border: 0;
+  background: var(--tertiary);
+  color: var(--on-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* Prominent Next / Previous Page Navigation Bar */
+.page-nav-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  background: var(--surface-container-low);
+  border: var(--border-soft);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-sm) var(--space-md);
+}
+.nav-page-btn {
+  min-height: 52px;
+  min-width: 165px;
+  padding: 10px 20px;
+  border-radius: var(--rounded);
+  border: 0;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-micro) var(--ease-out), opacity var(--dur-short) var(--ease-out);
+}
+.nav-page-btn.is-prev {
+  background: var(--surface-container);
+  color: var(--on-surface);
+  border: var(--border-soft);
+}
+.nav-page-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-soft-hover); }
+.nav-page-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.page-indicator-center {
+  text-align: center;
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  color: var(--on-surface-variant);
+}
+.page-indicator-center strong {
+  display: block;
+  font-family: var(--font-headline);
+  font-size: 1rem;
+  color: var(--on-surface);
+}
+
+/* Character Picker Cards */
+.companion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+.companion-card {
+  background: var(--surface-container-low);
+  border: 2px solid var(--outline-variant);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  transition: transform var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+}
+.companion-card:hover { transform: translateY(-2px); }
+.companion-card.is-selected {
+  background: var(--primary-container);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Interactive Vocab Grid */
+.vocab-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  gap: var(--space-sm);
+}
+.vocab-chip {
+  min-height: 48px;
+  padding: 8px 10px;
+  border-radius: var(--rounded);
+  border: 1px solid var(--outline-variant);
+  background: var(--cream-paper);
+  color: var(--on-surface);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.vocab-chip:hover { background: var(--surface-container); transform: translateY(-1px); }
+.vocab-chip.is-active {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+.vocab-chip.is-learned:not(.is-active) {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+/* Map Pins */
+.map-node {
+  cursor: pointer;
+  transition: transform var(--dur-short) var(--ease-out);
+}
+.map-node:hover { transform: scale(1.06); }
+
+/* Weather Machine Console */
+.machine-console {
+  background: var(--surface-container);
+  border: 2px solid var(--wood-light);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-md);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+.machine-btn {
+  min-height: 54px;
+  border-radius: var(--rounded);
+  border: 2px solid var(--wood-warm);
+  background: var(--cream-paper);
+  color: var(--on-surface);
+  font-weight: 700;
+  font-size: 0.92rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--wood-warm);
+  transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.machine-btn:active, .machine-btn.is-active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--wood-warm);
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+
+/* Wardrobe Grid */
+.clothes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--space-sm);
+}
+.cloth-item {
+  min-height: 76px;
+  padding: 6px;
+  border-radius: var(--rounded);
+  border: 1px solid var(--outline-variant);
+  background: var(--cream-paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--on-surface);
+  cursor: grab;
+  user-select: none;
+  transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+}
+.cloth-item:hover { background: var(--surface-container-low); transform: translateY(-2px); }
+.cloth-item.is-worn {
+  background: var(--primary-container);
+  border-color: var(--primary);
+  color: var(--on-primary-container);
+}
+
+/* Chat Bubbles */
+.chat-window {
+  background: var(--surface-container-low);
+  border-radius: var(--rounded-lg);
+  border: var(--border-soft);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-height: 330px;
+  overflow-y: auto;
+}
+.chat-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-sm);
+}
+.chat-row.is-right { flex-direction: row-reverse; }
+.chat-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--cream-paper);
+  border: var(--border-soft);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.chat-row.is-right .chat-bubble {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: var(--primary);
+}
+.chat-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--rounded-full);
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Memory Game Grid */
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+.memory-card {
+  min-height: 76px;
+  border-radius: var(--rounded);
+  border: 2px solid var(--outline-variant);
+  background: var(--surface-container);
+  color: var(--on-surface);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+}
+.memory-card.is-flipped {
+  background: var(--cream-paper);
+  border-color: var(--tertiary);
+}
+.memory-card.is-matched {
+  background: var(--primary-container);
+  border-color: var(--primary);
+  color: var(--on-primary-container);
+}
+
+/* Feedback Banner */
+.feedback-banner {
+  padding: 10px 14px;
+  border-radius: var(--rounded);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-container);
+  color: var(--on-surface);
+}
+.feedback-banner.is-success {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+.feedback-banner.is-try {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+
+/* Form Labels & Inputs */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.field-label {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--on-surface-variant);
+  font-weight: 600;
+}
+.field-control {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--rounded);
+  border: 1px solid var(--outline);
+  background: var(--cream-paper);
+  color: var(--on-surface);
+  font-size: 0.95rem;
+}
+
+/* Sticker Drawer */
+.sticker-drawer {
+  background: var(--surface-container-low);
+  border: 2px solid var(--tertiary);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-md);
+  display: none;
+}
+.sticker-drawer.is-open { display: block; }
+.sticker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+.sticker-badge {
+  padding: 10px;
+  border-radius: var(--rounded);
+  background: var(--cream-paper);
+  border: 1px dashed var(--outline-variant);
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--on-surface-variant);
+}
+.sticker-badge.is-earned {
+  border-style: solid;
+  border-color: var(--primary);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+/* Scene Animations */
+@keyframes floatCloud {
+  0%, 100% { transform: translateX(0px); }
+  50% { transform: translateX(18px); }
+}
+@keyframes swayTree {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(3.5deg); }
+}
+@keyframes swayStrong {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(8deg); }
+}
+@keyframes rainFall {
+  0% { transform: translateY(-10px); opacity: 0; }
+  30% { opacity: 0.9; }
+  100% { transform: translateY(45px); opacity: 0; }
+}
+@keyframes snowFall {
+  0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+  30% { opacity: 0.95; }
+  100% { transform: translateY(55px) translateX(10px); opacity: 0; }
+}
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes birdFly {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(16px, -6px); }
+}
+@keyframes lightningFlash {
+  0%, 88%, 100% { opacity: 0; }
+  90%, 94% { opacity: 0.95; }
+}
+
+.anim-cloud { animation: floatCloud 7s ease-in-out infinite; }
+.anim-sway { transform-origin: bottom center; animation: swayTree 4s ease-in-out infinite; }
+.anim-sway-strong { transform-origin: bottom center; animation: swayStrong 1.4s ease-in-out infinite; }
+.anim-rain { animation: rainFall 0.9s linear infinite; }
+.anim-snow { animation: snowFall 2.8s linear infinite; }
+.anim-sun { transform-origin: center; animation: sunPulse 4s ease-in-out infinite; }
+.anim-bird { animation: birdFly 5s ease-in-out infinite; }
+.anim-lightning { animation: lightningFlash 4s linear infinite; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .spread-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+  .storybook-frame::after { display: none; }
+  .story-page { padding: var(--space-md); }
+}
+
+@media (max-width: 640px) {
+  .app-shell { padding: var(--space-sm); }
+  .book-ribbon { padding: var(--space-sm); }
+  .page-nav-footer { flex-wrap: wrap; }
+  .nav-page-btn { flex: 1 1 130px; min-width: 120px; font-size: 0.95rem; }
+  .page-indicator-center { order: -1; width: 100%; }
+  .memory-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Shared SVG Watercolor Filters -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
+  <defs>
+    <filter id="wc-wash" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.032" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="wc-soft" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <linearGradient id="sky-sunny-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color: var(--sky-zenith)"/>
+      <stop offset="65%" style="stop-color: var(--sky-day)"/>
+      <stop offset="100%" style="stop-color: var(--sun-glow)"/>
+    </linearGradient>
+    <linearGradient id="sky-rain-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color: var(--rain-deep)"/>
+      <stop offset="100%" style="stop-color: var(--rain-sky)"/>
+    </linearGradient>
+    <linearGradient id="sky-storm-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color: var(--storm-sky)"/>
+      <stop offset="100%" style="stop-color: var(--storm-cloud)"/>
+    </linearGradient>
+    <linearGradient id="sky-snow-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color: var(--rain-sky)"/>
+      <stop offset="100%" style="stop-color: var(--snow-sky)"/>
+    </linearGradient>
+    <linearGradient id="sky-sunset-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color: var(--lavender)"/>
+      <stop offset="55%" style="stop-color: var(--blossom-pink)"/>
+      <stop offset="100%" style="stop-color: var(--sun-glow)"/>
+    </linearGradient>
+    <linearGradient id="rainbow-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" style="stop-color: var(--dusty-pink)"/>
+      <stop offset="25%" style="stop-color: var(--muted-orange)"/>
+      <stop offset="50%" style="stop-color: var(--sun-gold)"/>
+      <stop offset="75%" style="stop-color: var(--meadow-light)"/>
+      <stop offset="100%" style="stop-color: var(--lavender)"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="app-shell">
+
+  <!-- Top Storybook Controls Ribbon -->
+  <header class="book-ribbon">
+    <div class="ribbon-brand">
+      <i data-lucide="book-open" style="width:22px;height:22px;color:var(--primary);" aria-hidden="true"></i>
+      <h1 class="ribbon-title">The Magical Weather Journey</h1>
+      <span class="companion-pill" id="companion-badge">Guide: Mia</span>
+    </div>
+
+    <div class="ribbon-controls">
+      <div class="level-toggle" role="group" aria-label="English level">
+        <button type="button" class="level-btn is-active" id="btn-level-a1" onclick="setLevel('A1')">A1 Starter</button>
+        <button type="button" class="level-btn" id="btn-level-a2" onclick="setLevel('A2')">A2 Explorer</button>
+      </div>
+
+      <button type="button" class="icon-btn" id="btn-music" onclick="toggleMusic()" aria-pressed="false">
+        <i data-lucide="music" style="width:18px;height:18px;" aria-hidden="true"></i>
+        <span>Music: Off</span>
+      </button>
+
+      <button type="button" class="icon-btn is-on" id="btn-sfx" onclick="toggleSound()" aria-pressed="true">
+        <i data-lucide="volume-2" style="width:18px;height:18px;" aria-hidden="true"></i>
+        <span>Sound: On</span>
+      </button>
+
+      <button type="button" class="sticker-counter-btn" onclick="toggleStickerDrawer()">
+        <i data-lucide="award" style="width:18px;height:18px;" aria-hidden="true"></i>
+        <span id="sticker-count-label">Stickers: 0 / 7</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Collapsible Sticker Pouch -->
+  <section class="sticker-drawer" id="sticker-drawer" aria-label="Collected Weather Stickers">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <p class="kicker" style="margin:0;">Your Weatherland Sticker Pouch</p>
+      <button type="button" class="btn-secondary" style="min-height:36px;padding:4px 12px;" onclick="toggleStickerDrawer()">Close</button>
+    </div>
+    <div class="sticker-grid" id="sticker-grid"></div>
+  </section>
+
+  <!-- Chapter / Page Progress Strip -->
+  <nav class="chapter-strip" aria-label="Storybook pages">
+    <span class="chapter-strip-label" id="strip-chapter-name">Cover Story</span>
+    <div class="page-dots" id="page-dots"></div>
+  </nav>
+
+  <!-- Main Open Storybook Frame -->
+  <main class="storybook-frame" id="storybook-frame">
+
+    <!-- PAGE 1: COVER & OPENING STORY -->
+    <section class="story-page is-active" data-page="0" aria-label="Page 1: Welcome to Weatherland">
+      <div class="spread-grid">
+        <div class="page-col">
+          <div class="scene-stage" id="cover-stage">
+            <svg viewBox="0 0 560 400" role="img" aria-label="Watercolor illustration of Weatherland village, green hills, river, clouds, and rainbow">
+              <rect width="560" height="400" fill="url(#sky-sunny-grad)"/>
+              <!-- Distant Rainbow -->
+              <path d="M 320 280 A 150 150 0 0 1 550 240" fill="none" stroke="url(#rainbow-grad)" stroke-width="18" opacity="0.55" filter="url(#wc-wash)"/>
+              <!-- Glowing Sun -->
+              <g class="anim-sun" style="cursor:pointer;" onclick="speakText(`The sun is shining in Weatherland!`); playToneSfx('birds');">
+                <circle cx="95" cy="82" r="46" fill="var(--sun-glow)" opacity="0.65" filter="url(#wc-soft)"/>
+                <circle cx="95" cy="82" r="30" fill="var(--sun-gold)" filter="url(#wc-wash)"/>
+              </g>
+              <!-- Drifting Clouds -->
+              <g class="anim-cloud" style="cursor:pointer;" onclick="speakText(`Look at the fluffy white clouds.`); playToneSfx('chime');">
+                <path d="M 205 95 Q 218 72 242 78 Q 258 60 284 74 Q 306 74 310 95 Z" fill="var(--cream-paper)" opacity="0.92" filter="url(#wc-wash)"/>
+                <path d="M 380 128 Q 392 108 414 114 Q 428 98 450 112 Q 468 112 472 128 Z" fill="var(--cream-paper)" opacity="0.88" filter="url(#wc-wash)"/>
+              </g>
+              <!-- Flying Birds -->
+              <g class="anim-bird" stroke="var(--ink-dark)" stroke-width="2" fill="none" stroke-linecap="round">
+                <path d="M 165 65 Q 172 58 179 65 Q 186 58 193 65"/>
+                <path d="M 190 86 Q 195 81 200 86 Q 205 81 210 86"/>
+              </g>
+              <!-- Rolling Hills -->
+              <path d="M 0 270 Q 140 210 290 260 T 560 245 L 560 400 L 0 400 Z" fill="var(--meadow-light)" filter="url(#wc-wash)"/>
+              <path d="M 0 310 Q 170 265 340 315 T 560 300 L 560 400 L 0 400 Z" fill="var(--meadow-mid)" filter="url(#wc-wash)"/>
+              <!-- Winding River -->
+              <path d="M 325 278 Q 280 315 335 350 T 395 400 L 448 400 Q 385 355 345 322 Q 332 295 348 278 Z" fill="var(--sky-day)" opacity="0.88" filter="url(#wc-wash)"/>
+              <!-- Cozy Storybook Cottages -->
+              <g transform="translate(86, 232)">
+                <rect x="0" y="24" width="54" height="40" rx="4" fill="var(--cream-paper)" stroke="var(--wood-warm)" stroke-width="2"/>
+                <polygon points="-6,26 27,-4 60,26" fill="var(--muted-orange)" filter="url(#wc-wash)"/>
+                <rect x="20" y="40" width="14" height="24" rx="2" fill="var(--wood-warm)"/>
+                <rect x="6" y="34" width="10" height="10" fill="var(--sun-glow)"/>
+              </g>
+              <g transform="translate(162, 248)">
+                <rect x="0" y="20" width="44" height="32" rx="4" fill="var(--blossom-pink)" stroke="var(--wood-warm)" stroke-width="2"/>
+                <polygon points="-5,22 22,-3 49,22" fill="var(--primary)" filter="url(#wc-wash)"/>
+                <rect x="16" y="34" width="12" height="18" rx="2" fill="var(--wood-warm)"/>
+              </g>
+              <!-- Swaying Trees & Flowers -->
+              <g class="anim-sway" transform="translate(46, 250)">
+                <rect x="10" y="32" width="8" height="26" fill="var(--wood-warm)"/>
+                <circle cx="14" cy="22" r="22" fill="var(--meadow-deep)" filter="url(#wc-wash)"/>
+              </g>
+              <g class="anim-sway" transform="translate(455, 255)">
+                <rect x="10" y="32" width="8" height="26" fill="var(--wood-warm)"/>
+                <circle cx="14" cy="22" r="24" fill="var(--meadow-deep)" filter="url(#wc-wash)"/>
+              </g>
+              <!-- Foreground Flowers -->
+              <circle cx="70" cy="365" r="5" fill="var(--sun-gold)"/>
+              <circle cx="120" cy="378" r="5" fill="var(--dusty-pink)"/>
+              <circle cx="485" cy="366" r="5" fill="var(--lavender)"/>
+              <circle cx="515" cy="352" r="5" fill="var(--sun-gold)"/>
+            </svg>
+          </div>
+          <p class="story-prose" style="font-size:0.9rem;text-align:center;">
+            Tip: Tap the sun or clouds in the picture to hear Weatherland wake up!
+          </p>
+        </div>
+
+        <div class="page-col">
+          <p class="kicker">Opening Story · CEFR A1–A2</p>
+          <h2 class="cover-title">The Magical Weather Journey</h2>
+          <div class="card is-leaf-highlight">
+            <p class="story-prose" style="color:var(--on-primary-container);">
+              <strong>Welcome to Weatherland!</strong><br>
+              Mia and Oliver are going on a wonderful adventure. Something magical is happening: the weather changes every day! Sometimes the sun shines, sometimes it rains, and sometimes the wind blows. Can you help them explore the weather around the world?
+            </p>
+            <div style="margin-top:var(--space-sm);display:flex;gap:var(--space-sm);flex-wrap:wrap;">
+              <button type="button" class="btn-secondary" onclick="speakText(`Welcome to Weatherland! Mia and Oliver are going on a wonderful adventure. The weather changes every day. Can you help them explore?`)">
+                <i data-lucide="volume-2" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Listen to Story
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <p class="kicker" style="margin-bottom:var(--space-sm);">1. Choose Your Adventure Companion</p>
+            <div class="companion-grid">
+              <button type="button" class="companion-card is-selected" id="pick-mia" onclick="chooseCompanion('Mia')">
+                <svg viewBox="0 0 90 95" width="76" height="80" aria-hidden="true">
+                  <circle cx="45" cy="48" r="36" fill="var(--blossom-pink)" opacity="0.55"/>
+                  <circle cx="24" cy="42" r="10" fill="var(--hair-mia)"/>
+                  <circle cx="66" cy="42" r="10" fill="var(--hair-mia)"/>
+                  <circle cx="45" cy="40" r="20" fill="var(--skin-warm)"/>
+                  <path d="M 25 38 Q 45 14 65 38 Q 52 24 45 28 Q 38 24 25 38 Z" fill="var(--hair-mia)"/>
+                  <circle cx="38" cy="40" r="2.6" fill="var(--ink-dark)"/>
+                  <circle cx="52" cy="40" r="2.6" fill="var(--ink-dark)"/>
+                  <path d="M 39 48 Q 45 53 51 48" fill="none" stroke="var(--ink-dark)" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 28 62 Q 45 58 62 62 L 66 88 L 24 88 Z" fill="var(--shirt-coral)"/>
+                </svg>
+                <div style="font-family:var(--font-headline);font-weight:700;font-size:1.1rem;">Mia</div>
+                <div style="font-size:0.85rem;color:var(--on-surface-variant);">Curious nature observer</div>
+              </button>
+
+              <button type="button" class="companion-card" id="pick-oliver" onclick="chooseCompanion('Oliver')">
+                <svg viewBox="0 0 90 95" width="76" height="80" aria-hidden="true">
+                  <circle cx="45" cy="48" r="36" fill="var(--sun-glow)" opacity="0.65"/>
+                  <circle cx="45" cy="40" r="20" fill="var(--skin-warm)"/>
+                  <path d="M 24 37 Q 34 14 54 18 Q 66 22 65 37 Q 50 25 24 37 Z" fill="var(--hair-oliver)"/>
+                  <circle cx="38" cy="40" r="2.6" fill="var(--ink-dark)"/>
+                  <circle cx="52" cy="40" r="2.6" fill="var(--ink-dark)"/>
+                  <path d="M 39 48 Q 45 53 51 48" fill="none" stroke="var(--ink-dark)" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 28 62 Q 45 58 62 62 L 66 88 L 24 88 Z" fill="var(--shirt-blue)"/>
+                </svg>
+                <div style="font-family:var(--font-headline);font-weight:700;font-size:1.1rem;">Oliver</div>
+                <div style="font-size:0.85rem;color:var(--on-surface-variant);">Adventurous sky explorer</div>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" class="btn-primary" style="min-height:56px;font-size:1.12rem;" onclick="goToPage(1)">
+            <i data-lucide="compass" style="width:22px;height:22px;" aria-hidden="true"></i>
+            START MY ADVENTURE
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: INTERACTIVE WEATHERLAND MAP -->
+    <section class="story-page" data-page="1" aria-label="Page 2: Explore Weatherland Map">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Interactive Storybook Map</p>
+          <h2 class="page-heading">Explore Weatherland</h2>
+          <p class="story-prose">
+            Click any destination on the hand-painted map to preview its weather, earn its badge, or leap straight to that chapter!
+          </p>
+          <div class="scene-stage" style="background:var(--parchment-edge);">
+            <svg viewBox="0 0 560 410" role="img" aria-label="Hand-painted map of seven weather destinations in Weatherland">
+              <rect width="560" height="410" fill="var(--surface-container-low)"/>
+              <!-- Sea & Hills watercolor patches -->
+              <path d="M 0 280 Q 150 245 300 300 T 560 285 L 560 410 L 0 410 Z" fill="var(--primary-container)" opacity="0.7" filter="url(#wc-wash)"/>
+              <path d="M 0 0 L 560 0 L 560 155 Q 370 190 210 130 T 0 165 Z" fill="var(--sky-day)" opacity="0.45" filter="url(#wc-wash)"/>
+              <!-- Winding Trail -->
+              <path d="M 80 320 Q 130 220 195 235 T 285 165 T 375 245 T 475 110 T 470 315" fill="none" stroke="var(--wood-light)" stroke-width="8" stroke-dasharray="10 8" stroke-linecap="round"/>
+
+              <!-- 1. Sunny Meadow -->
+              <g class="map-node" transform="translate(80, 315)" onclick="selectMapPlace('sunny_meadow')">
+                <circle r="30" fill="var(--sun-glow)" stroke="var(--tertiary)" stroke-width="2.5" filter="url(#wc-wash)"/>
+                <circle cx="0" cy="-4" r="11" fill="var(--sun-gold)"/>
+                <text y="44" text-anchor="middle" font-family="var(--font-body)" font-size="12" font-weight="700" fill="var(--on-surface)">1. Sunny Meadow</text>
+              </g>
+              <!-- 2. Cloudy Hill -->
+              <g class="map-node" transform="translate(175, 225)" onclick="selectMapPlace('cloudy_hill')">
+                <circle r="28" fill="var(--fog-mist)" stroke="var(--secondary)" stroke-width="2.5" filter="url(#wc-wash)"/>
+                <path d="M -14 5 Q -10 -7 0 -4 Q 8 -12 16 -2 Q 20 6 12 8 L -10 8 Z" fill="var(--cream-paper)"/>
+                <text y="42" text-anchor="middle" font-family="var(--font-body)" font-size="12" font-weight="700" fill="var(--on-surface)">2. Cloudy Hill</text>
+              </g>
+              <!-- 3. Rainy Village -->
+              <g class="map-node" transform="translate(275, 160)" onclick="selectMapPlace('rainy_village')">
+                <circle r="28" fill="var(--rain-sky)" stroke="var(--rain-deep)" stroke-width="2.5" filter="url(#wc-wash)"/>
+                <line x1="-8" y1="-6" x2="-11" y2="8" stroke="var(--cream-paper)" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="2" y1="-8" x2="-1" y2="6" stroke="var(--cream-paper)" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="11" y1="-4" x2="8" y2="10" stroke="var(--cream-paper)" stroke-width="2.5" stroke-linecap="round"/>
+                <text y="42" text-anchor="middle" font-family="var(--font-body)" font-size="12" font-weight="700" fill="var(--on-surface)">3. Rainy Village</text>
+              </g>
+              <!-- 4. Windy Forest -->
+              <g class="map-node" transform="translate(365, 250)" onclick="selectMapPlace('windy_forest')">
+                <circle r="28" fill="var(--meadow-light)" stroke="var(--meadow-deep)" stroke-width="2.5" filter="url(#wc-wash)"/>
+                <path d="M -14 -4 Q 0 -10 12 -3 M -10 6 Q 4 1 15 6" fill="none" stroke="var(--cream-paper)" stroke-width="2.5" stroke-linecap="round"/>
+                <text y="42" text-anchor="middle" font-family="var(--font-body)" font-size="12" font-weight="700" fill="var(--on-surface)">4. Windy Forest</text>
+              </g>
+              <!-- 5. Stormy Mountain -->
+              <g class="map-node" transform="translate(465, 108)" onclick="selectMapPlace('stormy_mountain')">
+                <circle r="28" fill="var(--storm-cloud)" stroke="var(--storm-sky)" stroke-width="2.5" filter="url(#wc-wash)"/>
+                <polygon points="0,-13 -7,2 0,2 -4,14 9,-2 2,-2" fill="var(--lightning-gold)"/>
+                <text y="42" text-anchor="middle" font-family="var(--font-body)" font-size="12" font-weight="700" fill="var(--on-surface)">5. Stormy Mountain</text>
+              </g>
+              <!-- 6. Snowy Town -->
+              <g class="map-node" transform="translate(300, 72)" onclick="selectMapPlace('snowy_town')">
+                <circle r="28" fill="var(--snow-sky)" stroke="var(--rain-deep)" stroke-width="2.5" filter="url(#wc-wash)"/>
+                <circle cx="-7" cy="-5" r="3" fill="var(--cream-paper)"/>
+                <circle cx="7" cy="-8" r="3" fill="var(--cream-paper)"/>
+                <circle cx="0" cy="6" r="3.5" fill="var(--cream-paper)"/>
+                <text y="42" text-anchor="middle" font-family="var(--font-body)" font-size="12" font-weight="700" fill="var(--on-surface)">6. Snowy Town</text>
+              </g>
+              <!-- 7. Rainbow Garden -->
+              <g class="map-node" transform="translate(468, 315)" onclick="selectMapPlace('rainbow_garden')">
+                <circle r="30" fill="var(--blossom-pink)" stroke="var(--dusty-pink)" stroke-width="2.5" filter="url(#wc-wash)"/>
+                <path d="M -16 6 A 16 16 0 0 1 16 6" fill="none" stroke="url(#rainbow-grad)" stroke-width="6" stroke-linecap="round"/>
+                <text y="44" text-anchor="middle" font-family="var(--font-body)" font-size="12" font-weight="700" fill="var(--on-surface)">7. Rainbow Garden</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <div class="card is-leaf-highlight" id="map-detail-card">
+            <p class="kicker" style="color:var(--on-primary-container);">Destination Guide</p>
+            <h3 class="page-heading" id="map-place-title" style="font-size:1.55rem;margin-top:4px;">Sunny Meadow</h3>
+            <p class="story-prose" id="map-place-desc" style="color:var(--on-primary-container);margin-top:8px;">
+              Golden sunlight warms the wildflowers. Tap any landmark on the left map to visit!
+            </p>
+            <div style="margin-top:var(--space-md);display:flex;gap:var(--space-sm);flex-wrap:wrap;">
+              <button type="button" class="btn-primary" id="map-jump-btn" onclick="jumpFromMap()">
+                <i data-lucide="map-pin" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Visit Chapter
+              </button>
+              <button type="button" class="btn-secondary" onclick="speakMapPlace()">
+                <i data-lucide="volume-2" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Hear Description
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="kicker">How This Storybook Works</p>
+            <ul style="margin:8px 0 0 18px;padding:0;display:flex;flex-direction:column;gap:6px;color:var(--on-surface-variant);font-size:0.95rem;">
+              <li><strong>See &amp; Hear:</strong> Tap sky, clouds, clothes, and characters for English audio and Indonesian meanings.</li>
+              <li><strong>Explore &amp; Play:</strong> Turn pages with <em>Next Page</em> and <em>Previous Page</em>, or jump using the page bar above.</li>
+              <li><strong>Collect Stickers:</strong> Finish mini-games across the chapters to earn all 7 Weatherland stickers!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: CHAPTER 1 — DISCOVER THE WEATHER (11 VOCABULARY WORDS) -->
+    <section class="story-page" data-page="2" aria-label="Page 3: Chapter 1 Discover the Weather">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Chapter 1 · Sunny Meadow Vocabulary</p>
+          <h2 class="page-heading">Discover the Weather</h2>
+          <p class="story-prose">
+            Tap any weather word below (or tap the sky in the picture) to transform the meadow, hear clear English pronunciation, and see the Indonesian meaning!
+          </p>
+
+          <!-- Dynamic Animated Landscape -->
+          <div class="scene-stage" id="ch1-stage">
+            <svg viewBox="0 0 540 300" role="img" aria-label="Interactive animated meadow showing the selected weather">
+              <rect id="ch1-sky" width="540" height="300" fill="url(#sky-sunny-grad)"/>
+              <g id="ch1-sun" class="anim-sun">
+                <circle cx="445" cy="70" r="42" fill="var(--sun-glow)" opacity="0.6" filter="url(#wc-soft)"/>
+                <circle cx="445" cy="70" r="27" fill="var(--sun-gold)" filter="url(#wc-wash)"/>
+              </g>
+              <g id="ch1-clouds" class="anim-cloud" opacity="0.55">
+                <path d="M 85 82 Q 100 54 126 62 Q 146 42 174 60 Q 198 60 202 82 Z" fill="var(--cream-paper)" filter="url(#wc-wash)"/>
+                <path d="M 245 104 Q 258 82 280 88 Q 296 72 318 86 Q 336 86 340 104 Z" fill="var(--cream-paper)" filter="url(#wc-wash)"/>
+              </g>
+              <!-- Lightning -->
+              <polygon id="ch1-lightning" class="anim-lightning" points="285,95 268,142 285,142 272,188 308,132 290,132" fill="var(--lightning-gold)" opacity="0"/>
+              <!-- Raindrops -->
+              <g id="ch1-rain" opacity="0" stroke="var(--rain-drop)" stroke-width="3" stroke-linecap="round">
+                <line class="anim-rain" x1="110" y1="100" x2="104" y2="122"/>
+                <line class="anim-rain" x1="190" y1="90" x2="184" y2="112" style="animation-delay:0.25s"/>
+                <line class="anim-rain" x1="270" y1="105" x2="264" y2="127" style="animation-delay:0.5s"/>
+                <line class="anim-rain" x1="360" y1="95" x2="354" y2="117" style="animation-delay:0.15s"/>
+                <line class="anim-rain" x1="430" y1="110" x2="424" y2="132" style="animation-delay:0.35s"/>
+              </g>
+              <!-- Snowflakes -->
+              <g id="ch1-snow" opacity="0" fill="var(--cream-paper)">
+                <circle class="anim-snow" cx="120" cy="95" r="4"/>
+                <circle class="anim-snow" cx="210" cy="85" r="5" style="animation-delay:0.7s"/>
+                <circle class="anim-snow" cx="310" cy="90" r="4" style="animation-delay:1.3s"/>
+                <circle class="anim-snow" cx="410" cy="100" r="5" style="animation-delay:0.4s"/>
+              </g>
+              <!-- Hills -->
+              <path id="ch1-hill-back" d="M 0 215 Q 160 165 320 210 T 540 195 L 540 300 L 0 300 Z" fill="var(--meadow-light)" filter="url(#wc-wash)"/>
+              <path id="ch1-hill-front" d="M 0 245 Q 200 205 380 245 T 540 235 L 540 300 L 0 300 Z" fill="var(--meadow-mid)" filter="url(#wc-wash)"/>
+              <!-- Tree & Wind Leaves -->
+              <g id="ch1-tree" class="anim-sway" transform="translate(88, 175)">
+                <rect x="14" y="34" width="10" height="36" fill="var(--wood-warm)"/>
+                <circle cx="19" cy="24" r="28" fill="var(--meadow-deep)" filter="url(#wc-wash)"/>
+              </g>
+              <g id="ch1-leaves" opacity="0" fill="var(--muted-orange)">
+                <ellipse class="anim-cloud" cx="220" cy="185" rx="7" ry="3.5" transform="rotate(-20 220 185)"/>
+                <ellipse class="anim-cloud" cx="330" cy="160" rx="7" ry="3.5" transform="rotate(15 330 160)"/>
+              </g>
+              <!-- Fog Overlay -->
+              <rect id="ch1-fog" x="0" y="130" width="540" height="170" fill="var(--fog-mist)" opacity="0" filter="url(#wc-soft)"/>
+              <!-- Thermometer -->
+              <g transform="translate(485, 165)">
+                <rect x="0" y="0" width="18" height="72" rx="9" fill="var(--cream-paper)" stroke="var(--outline)" stroke-width="2"/>
+                <circle cx="9" cy="66" r="12" fill="var(--dusty-pink)"/>
+                <rect id="ch1-therm-fill" x="5" y="24" width="8" height="42" rx="4" fill="var(--dusty-pink)"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <div class="card is-leaf-highlight" id="vocab-detail-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+              <div>
+                <p class="kicker" style="color:var(--on-primary-container);">Selected Word</p>
+                <h3 class="page-heading" id="vocab-word-title" style="font-size:1.85rem;">SUNNY</h3>
+              </div>
+              <button type="button" class="btn-primary" onclick="speakCurrentVocab()">
+                <i data-lucide="volume-2" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Pronounce
+              </button>
+            </div>
+            <p class="story-prose" style="color:var(--on-primary-container);margin-top:8px;">
+              <strong>Example:</strong> <span id="vocab-example">`It's sunny today.`</span><br>
+              <strong>Indonesian:</strong> <span id="vocab-id">Cerah</span>
+            </p>
+            <p style="font-family:var(--font-label);font-size:0.8rem;margin:8px 0 0 0;color:var(--on-primary-container);" id="vocab-progress-text">
+              Discovered: 1 / 11 weather words
+            </p>
+          </div>
+
+          <div>
+            <p class="kicker" style="margin-bottom:var(--space-sm);">Tap Each Weather &amp; Temperature Word (11)</p>
+            <div class="vocab-chip-grid" id="vocab-chip-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 4: CHAPTER 2 — BECOME A WEATHER EXPLORER & MINI-GAMES 1–2 -->
+    <section class="story-page" data-page="3" aria-label="Page 4: Chapter 2 Weather Explorer">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Chapter 2 · 6 Outdoor Weather Scenes</p>
+          <h2 class="page-heading">Become a Weather Explorer</h2>
+
+          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="ch2-scene-tabs"></div>
+
+          <div class="scene-stage" id="ch2-stage">
+            <svg viewBox="0 0 540 280" role="img" aria-label="Interactive outdoor weather exploration scene">
+              <rect id="ch2-sky" width="540" height="280" fill="url(#sky-sunny-grad)"/>
+              <g id="ch2-sun" class="anim-sun"><circle cx="90" cy="65" r="28" fill="var(--sun-gold)"/></g>
+              <g id="ch2-cloud" class="anim-cloud" opacity="0.45">
+                <path d="M 190 78 Q 208 46 238 56 Q 262 36 292 54 Q 320 54 326 78 Z" fill="var(--cream-paper)" filter="url(#wc-wash)"/>
+                <path d="M 355 96 Q 370 70 396 76 Q 416 58 442 74 Q 465 74 470 96 Z" fill="var(--cream-paper)" filter="url(#wc-wash)"/>
+              </g>
+              <polygon id="ch2-lightning" class="anim-lightning" points="325,85 308,132 325,132 312,175 346,120 330,120" fill="var(--lightning-gold)" opacity="0"/>
+              <g id="ch2-rain" opacity="0" stroke="var(--rain-drop)" stroke-width="3" stroke-linecap="round">
+                <line class="anim-rain" x1="120" y1="88" x2="112" y2="114"/>
+                <line class="anim-rain" x1="220" y1="88" x2="212" y2="114" style="animation-delay:0.2s"/>
+                <line class="anim-rain" x1="310" y1="88" x2="302" y2="114" style="animation-delay:0.45s"/>
+                <line class="anim-rain" x1="420" y1="88" x2="412" y2="114" style="animation-delay:0.3s"/>
+              </g>
+              <g id="ch2-snow" opacity="0" fill="var(--cream-paper)">
+                <circle class="anim-snow" cx="140" cy="70" r="4"/>
+                <circle class="anim-snow" cx="250" cy="60" r="5" style="animation-delay:0.8s"/>
+                <circle class="anim-snow" cx="370" cy="75" r="4.5" style="animation-delay:1.4s"/>
+                <circle class="anim-snow" cx="460" cy="65" r="4" style="animation-delay:0.5s"/>
+              </g>
+              <path id="ch2-ground" d="M 0 205 Q 180 180 360 205 T 540 198 L 540 280 L 0 280 Z" fill="var(--meadow-mid)" filter="url(#wc-wash)"/>
+              <!-- Kite for windy -->
+              <g id="ch2-kite" opacity="0" transform="translate(370, 82)">
+                <polygon points="0,-20 15,0 0,24 -15,0" fill="var(--dusty-pink)" stroke="var(--cream-paper)" stroke-width="2"/>
+                <path d="M 0 24 Q -10 42 5 58" fill="none" stroke="var(--tertiary)" stroke-width="2"/>
+              </g>
+              <!-- Snowman for snowy -->
+              <g id="ch2-snowman" opacity="0" transform="translate(380, 170)">
+                <circle cx="0" cy="36" r="22" fill="var(--snow-hill)" stroke="var(--outline-variant)" stroke-width="1.5"/>
+                <circle cx="0" cy="8" r="15" fill="var(--snow-hill)" stroke="var(--outline-variant)" stroke-width="1.5"/>
+                <circle cx="-5" cy="5" r="2" fill="var(--ink-dark)"/>
+                <circle cx="5" cy="5" r="2" fill="var(--ink-dark)"/>
+                <polygon points="0,8 12,11 0,13" fill="var(--muted-orange)"/>
+              </g>
+              <!-- Umbrella for rainy -->
+              <g id="ch2-umbrella" opacity="0" transform="translate(235, 145)">
+                <path d="M -28 0 A 28 24 0 0 1 28 0 Z" fill="var(--muted-orange)"/>
+                <path d="M 0 0 L 0 36 Q 0 44 -8 44" fill="none" stroke="var(--wood-warm)" stroke-width="3" stroke-linecap="round"/>
+              </g>
+              <!-- Child Explorer -->
+              <g transform="translate(175, 165)">
+                <circle cx="20" cy="14" r="13" fill="var(--skin-warm)"/>
+                <path d="M 8 12 Q 20 -2 32 12" fill="var(--hair-mia)"/>
+                <rect x="8" y="28" width="24" height="32" rx="6" fill="var(--shirt-coral)"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="card is-leaf-highlight">
+            <p class="story-prose" id="ch2-qa-text" style="color:var(--on-primary-container);">
+              <strong>Question:</strong> "What's the weather like?" — <strong>Answer:</strong> "It's sunny!"
+            </p>
+            <p class="story-prose" id="ch2-safety-note" style="font-size:0.9rem;margin-top:6px;color:var(--on-primary-container);"></p>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <div class="card">
+            <p class="kicker">Mini-Game 1 · Guess the Weather Sound</p>
+            <h3 class="page-heading" style="font-size:1.3rem;">Listen &amp; Match the Sound</h3>
+            <p class="story-prose" style="font-size:0.95rem;margin-top:4px;">
+              Press <strong>Play Mystery Sound</strong>, listen closely, and pick the weather you hear!
+            </p>
+            <div style="display:flex;gap:var(--space-sm);margin:var(--space-sm) 0;flex-wrap:wrap;">
+              <button type="button" class="btn-primary" onclick="playSoundMystery()">
+                <i data-lucide="headphones" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Play Mystery Sound
+              </button>
+              <button type="button" class="btn-secondary" onclick="newSoundMystery()">Next Sound</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;" id="sound-guess-options"></div>
+            <div class="feedback-banner" id="sound-guess-feedback" style="margin-top:var(--space-sm);">
+              Tap "Play Mystery Sound" to start!
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="kicker">Mini-Game 2 · Weather Detective</p>
+            <h3 class="page-heading" style="font-size:1.3rem;">Read the Clue &amp; Solve</h3>
+            <p class="story-prose" id="detective-clue" style="font-weight:700;margin-top:6px;">
+              Clue: "Children are flying a kite and leaves are blowing in the air!"
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--space-sm);" id="detective-options"></div>
+            <div class="feedback-banner" id="detective-feedback" style="margin-top:var(--space-sm);">
+              Choose the matching weather condition!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5: CHAPTER 3 — THE MAGICAL WEATHER MACHINE -->
+    <section class="story-page" data-page="4" aria-label="Page 5: Chapter 3 The Magical Weather Machine">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Chapter 3 · The Magical Weather Laboratory</p>
+          <h2 class="page-heading">The Magical Weather Machine</h2>
+          <p class="story-prose">
+            Press the brass weather levers on the machine to transform the entire world outside the laboratory window!
+          </p>
+
+          <!-- Animated Laboratory Window Stage -->
+          <div class="scene-stage" id="machine-stage">
+            <svg viewBox="0 0 540 310" role="img" aria-label="Weather laboratory window showing real-time weather transformations">
+              <rect id="wm-sky" width="540" height="310" fill="url(#sky-sunny-grad)"/>
+              <g id="wm-sun" class="anim-sun">
+                <circle cx="430" cy="70" r="40" fill="var(--sun-glow)" opacity="0.65"/>
+                <circle cx="430" cy="70" r="26" fill="var(--sun-gold)"/>
+              </g>
+              <g id="wm-clouds" class="anim-cloud" opacity="0.3">
+                <path d="M 75 88 Q 92 56 122 66 Q 146 44 176 62 Q 204 62 210 88 Z" fill="var(--cream-paper)" filter="url(#wc-wash)"/>
+                <path d="M 255 98 Q 272 68 302 76 Q 326 54 356 72 Q 382 72 388 98 Z" fill="var(--cream-paper)" filter="url(#wc-wash)"/>
+              </g>
+              <polygon id="wm-lightning" class="anim-lightning" points="255,95 236,144 256,144 242,190 282,130 264,130" fill="var(--lightning-gold)" opacity="0"/>
+              <g id="wm-rain" opacity="0" stroke="var(--rain-drop)" stroke-width="3" stroke-linecap="round">
+                <line class="anim-rain" x1="90" y1="95" x2="84" y2="122"/>
+                <line class="anim-rain" x1="175" y1="90" x2="169" y2="117" style="animation-delay:0.2s"/>
+                <line class="anim-rain" x1="265" y1="98" x2="259" y2="125" style="animation-delay:0.4s"/>
+                <line class="anim-rain" x1="355" y1="92" x2="349" y2="119" style="animation-delay:0.15s"/>
+                <line class="anim-rain" x1="445" y1="96" x2="439" y2="123" style="animation-delay:0.35s"/>
+              </g>
+              <g id="wm-snow" opacity="0" fill="var(--cream-paper)">
+                <circle class="anim-snow" cx="105" cy="80" r="4"/>
+                <circle class="anim-snow" cx="215" cy="70" r="5" style="animation-delay:0.7s"/>
+                <circle class="anim-snow" cx="325" cy="85" r="4" style="animation-delay:1.2s"/>
+                <circle class="anim-snow" cx="430" cy="75" r="5" style="animation-delay:0.4s"/>
+              </g>
+              <path id="wm-ground" d="M 0 225 Q 170 190 340 225 T 540 212 L 540 310 L 0 310 Z" fill="var(--meadow-mid)" filter="url(#wc-wash)"/>
+              <!-- Tree -->
+              <g id="wm-tree" class="anim-sway" transform="translate(82, 165)">
+                <rect x="12" y="34" width="10" height="36" fill="var(--wood-warm)"/>
+                <circle cx="17" cy="22" r="28" fill="var(--meadow-deep)" filter="url(#wc-wash)"/>
+              </g>
+              <!-- Puddles -->
+              <ellipse id="wm-puddle" cx="265" cy="272" rx="52" ry="11" fill="var(--rain-drop)" opacity="0"/>
+              <!-- Umbrella -->
+              <g id="wm-umbrella" opacity="0" transform="translate(265, 195)">
+                <path d="M -30 0 A 30 24 0 0 1 30 0 Z" fill="var(--dusty-pink)"/>
+                <line x1="0" y1="0" x2="0" y2="38" stroke="var(--wood-warm)" stroke-width="3"/>
+              </g>
+              <!-- Snowman -->
+              <g id="wm-snowman" opacity="0" transform="translate(415, 185)">
+                <circle cx="0" cy="36" r="22" fill="var(--snow-hill)"/>
+                <circle cx="0" cy="8" r="15" fill="var(--snow-hill)"/>
+                <polygon points="0,8 12,11 0,13" fill="var(--muted-orange)"/>
+              </g>
+              <!-- Kite -->
+              <g id="wm-kite" opacity="0" transform="translate(360, 105)">
+                <polygon points="0,-18 14,0 0,20 -14,0" fill="var(--sun-gold)" stroke="var(--tertiary)" stroke-width="2"/>
+                <path d="M 0 20 Q -12 40 6 58" fill="none" stroke="var(--cream-paper)" stroke-width="2"/>
+              </g>
+              <!-- Wooden Window Frame -->
+              <rect x="0" y="0" width="540" height="310" fill="none" stroke="var(--wood-warm)" stroke-width="14"/>
+              <line x1="270" y1="0" x2="270" y2="310" stroke="var(--wood-warm)" stroke-width="6" opacity="0.35"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <div>
+            <p class="kicker" style="margin-bottom:var(--space-sm);">Weather Machine Control Panel</p>
+            <div class="machine-console">
+              <button type="button" class="machine-btn is-active" id="wm-btn-sunny" onclick="activateWeatherMachine('sunny')">
+                <i data-lucide="sun" style="width:20px;height:20px;color:var(--tertiary);" aria-hidden="true"></i>
+                Sun
+              </button>
+              <button type="button" class="machine-btn" id="wm-btn-cloudy" onclick="activateWeatherMachine('cloudy')">
+                <i data-lucide="cloud" style="width:20px;height:20px;color:var(--secondary);" aria-hidden="true"></i>
+                Cloud
+              </button>
+              <button type="button" class="machine-btn" id="wm-btn-rainy" onclick="activateWeatherMachine('rainy')">
+                <i data-lucide="cloud-rain" style="width:20px;height:20px;color:var(--data-4);" aria-hidden="true"></i>
+                Rain
+              </button>
+              <button type="button" class="machine-btn" id="wm-btn-windy" onclick="activateWeatherMachine('windy')">
+                <i data-lucide="wind" style="width:20px;height:20px;color:var(--primary);" aria-hidden="true"></i>
+                Wind
+              </button>
+              <button type="button" class="machine-btn" id="wm-btn-snowy" onclick="activateWeatherMachine('snowy')">
+                <i data-lucide="snowflake" style="width:20px;height:20px;color:var(--rain-deep);" aria-hidden="true"></i>
+                Snow
+              </button>
+              <button type="button" class="machine-btn" id="wm-btn-stormy" onclick="activateWeatherMachine('stormy')">
+                <i data-lucide="cloud-lightning" style="width:20px;height:20px;color:var(--error);" aria-hidden="true"></i>
+                Storm
+              </button>
+            </div>
+          </div>
+
+          <div class="card is-leaf-highlight">
+            <p class="kicker" style="color:var(--on-primary-container);">Companion Reaction</p>
+            <p class="story-prose" id="wm-reaction" style="color:var(--on-primary-container);font-weight:700;margin-top:4px;">
+              "Wow! The sun is shining brightly! It's sunny!"
+            </p>
+          </div>
+
+          <div class="card">
+            <p class="kicker">Mini-Game 4 · Change the Weather Mission</p>
+            <h3 class="page-heading" style="font-size:1.3rem;">Create the Target Weather</h3>
+            <p class="story-prose" id="wm-mission-prompt" style="margin-top:6px;">
+              Mission: Make the sky snowy so we can build a snowman!
+            </p>
+            <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+              <button type="button" class="btn-primary" onclick="checkWeatherMachineMission()">Check My Weather</button>
+              <button type="button" class="btn-secondary" onclick="nextWeatherMachineMission()">New Mission</button>
+            </div>
+            <div class="feedback-banner" id="wm-mission-feedback" style="margin-top:8px;">
+              Use the levers above, then press "Check My Weather"!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 6: CHAPTER 4 — WHAT SHOULD I WEAR? (WARDROBE & DRESS-UP) -->
+    <section class="story-page" data-page="5" aria-label="Page 6: Chapter 4 What Should I Wear">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Chapter 4 · The Illustrated Wardrobe Room</p>
+          <h2 class="page-heading">What Should I Wear?</h2>
+          <p class="story-prose">
+            Drag clothes onto <strong class="companion-name">Mia</strong> (or tap any item) to dress up for the mission!
+          </p>
+
+          <!-- Dress-Up Drop Stage -->
+          <div class="scene-stage" id="dressup-dropzone" style="background:var(--surface-container-low);" ondragover="allowDrop(event)" ondrop="dropCloth(event)">
+            <svg viewBox="0 0 420 300" role="img" aria-label="Illustrated character standing in the wardrobe room ready to wear weather clothes">
+              <rect width="420" height="300" fill="var(--surface-container-low)"/>
+              <!-- Wooden Wardrobe Background -->
+              <rect x="24" y="22" width="372" height="256" rx="12" fill="var(--cream-paper)" stroke="var(--wood-light)" stroke-width="3"/>
+              <ellipse cx="210" cy="256" rx="75" ry="12" fill="var(--surface-container-high)"/>
+              <!-- Character Body -->
+              <g transform="translate(150, 48)">
+                <!-- Legs / Shorts -->
+                <rect x="40" y="138" width="16" height="54" rx="5" fill="var(--skin-warm)"/>
+                <rect x="64" y="138" width="16" height="54" rx="5" fill="var(--skin-warm)"/>
+                <rect id="wear-shorts" x="36" y="128" width="48" height="30" rx="4" fill="var(--shirt-blue)"/>
+                <!-- Boots / Sandals -->
+                <g id="wear-boots" opacity="0">
+                  <rect x="37" y="168" width="22" height="28" rx="4" fill="var(--sun-gold)" stroke="var(--tertiary)" stroke-width="1.5"/>
+                  <rect x="61" y="168" width="22" height="28" rx="4" fill="var(--sun-gold)" stroke="var(--tertiary)" stroke-width="1.5"/>
+                </g>
+                <g id="wear-sandals" opacity="0">
+                  <rect x="38" y="186" width="20" height="8" rx="3" fill="var(--wood-warm)"/>
+                  <rect x="62" y="186" width="20" height="8" rx="3" fill="var(--wood-warm)"/>
+                </g>
+                <!-- Arms -->
+                <rect x="18" y="76" width="14" height="52" rx="6" fill="var(--skin-warm)"/>
+                <rect x="88" y="76" width="14" height="52" rx="6" fill="var(--skin-warm)"/>
+                <!-- Gloves -->
+                <g id="wear-gloves" opacity="0" fill="var(--dusty-pink)">
+                  <circle cx="25" cy="126" r="9"/>
+                  <circle cx="95" cy="126" r="9"/>
+                </g>
+                <!-- Base T-shirt -->
+                <path id="wear-tshirt" d="M 32 72 L 88 72 L 94 132 L 26 132 Z" fill="var(--shirt-coral)"/>
+                <!-- Sweater -->
+                <path id="wear-sweater" opacity="0" d="M 18 72 L 102 72 L 104 114 L 88 114 L 88 134 L 32 134 L 32 114 L 16 114 Z" fill="var(--lavender)"/>
+                <!-- Jacket -->
+                <path id="wear-jacket" opacity="0" d="M 16 70 L 104 70 L 104 128 L 88 128 L 88 138 L 32 138 L 32 128 L 16 128 Z" fill="var(--primary)"/>
+                <!-- Raincoat -->
+                <path id="wear-raincoat" opacity="0" d="M 16 70 L 104 70 L 104 134 L 92 134 L 94 152 L 26 152 L 28 134 L 16 134 Z" fill="var(--sun-gold)"/>
+                <!-- Head -->
+                <circle cx="60" cy="44" r="24" fill="var(--skin-warm)"/>
+                <path id="dressup-hair" d="M 36 40 Q 60 12 84 40 Q 68 24 60 28 Q 52 24 36 40 Z" fill="var(--hair-mia)"/>
+                <circle cx="51" cy="44" r="2.6" fill="var(--ink-dark)"/>
+                <circle cx="69" cy="44" r="2.6" fill="var(--ink-dark)"/>
+                <path d="M 53 54 Q 60 59 67 54" fill="none" stroke="var(--ink-dark)" stroke-width="2" stroke-linecap="round"/>
+                <!-- Sunglasses -->
+                <g id="wear-sunglasses" opacity="0">
+                  <rect x="42" y="38" width="14" height="9" rx="3" fill="var(--ink-dark)"/>
+                  <rect x="64" y="38" width="14" height="9" rx="3" fill="var(--ink-dark)"/>
+                  <line x1="56" y1="42" x2="64" y2="42" stroke="var(--ink-dark)" stroke-width="2"/>
+                </g>
+                <!-- Hat -->
+                <g id="wear-hat" opacity="0">
+                  <ellipse cx="60" cy="24" rx="28" ry="6" fill="var(--tertiary)"/>
+                  <path d="M 42 24 A 18 16 0 0 1 78 24 Z" fill="var(--muted-orange)"/>
+                </g>
+                <!-- Scarf -->
+                <g id="wear-scarf" opacity="0">
+                  <rect x="38" y="66" width="44" height="12" rx="5" fill="var(--dusty-pink)"/>
+                  <rect x="64" y="72" width="13" height="28" rx="4" fill="var(--dusty-pink)"/>
+                </g>
+                <!-- Umbrella -->
+                <g id="wear-umbrella" opacity="0" transform="translate(115, 20)">
+                  <path d="M -34 15 A 34 28 0 0 1 34 15 Z" fill="var(--primary)"/>
+                  <line x1="0" y1="15" x2="0" y2="95" stroke="var(--wood-warm)" stroke-width="3.5"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+            <span style="font-family:var(--font-label);font-size:0.8rem;color:var(--on-surface-variant);" id="worn-list-text">Wearing: T-shirt, Shorts</span>
+            <button type="button" class="btn-secondary" style="min-height:38px;padding:4px 12px;" onclick="resetClothes()">Reset Outfit</button>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <div class="card is-leaf-highlight">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <p class="kicker" style="color:var(--on-primary-container);" id="dressup-mission-label">Mission 1 of 3 · Sunny Day</p>
+              <button type="button" class="btn-secondary" style="min-height:36px;padding:4px 10px;" onclick="nextDressMission()">Next Mission</button>
+            </div>
+            <p class="story-prose" id="dressup-mission-question" style="color:var(--on-primary-container);font-weight:700;margin-top:6px;">
+              "It's sunny and hot! What should Mia wear?"
+            </p>
+            <p class="story-prose" id="dressup-expression" style="color:var(--on-primary-container);font-size:0.9rem;margin-top:4px;">
+              Expression: "I wear a T-shirt and sunglasses when it's sunny."
+            </p>
+          </div>
+
+          <div>
+            <p class="kicker" style="margin-bottom:6px;">Wardrobe Clothes (Drag onto character or click)</p>
+            <div class="clothes-grid" id="clothes-grid"></div>
+          </div>
+
+          <div class="feedback-banner" id="dressup-feedback">
+            Try dressing your companion for Mission 1!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 7: CHAPTER 5 — THE WEATHER FORECAST STUDIO -->
+    <section class="story-page" data-page="6" aria-label="Page 7: Chapter 5 The Weather Forecast Studio">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Chapter 5 · Television Weather Studio</p>
+          <h2 class="page-heading">The Weather Forecast Studio</h2>
+          <p class="story-prose">
+            Welcome on air! Listen to the weather report, click the matching town on the studio map, then deliver your own forecast!
+          </p>
+
+          <!-- Interactive 4-Location Studio Map -->
+          <div class="scene-stage" style="background:var(--surface-container-low);">
+            <svg viewBox="0 0 520 270" role="img" aria-label="Television weather studio map showing four locations">
+              <rect width="520" height="270" fill="var(--sky-day)" opacity="0.35"/>
+              <path d="M 30 30 Q 260 15 490 35 L 490 240 Q 260 255 30 235 Z" fill="var(--meadow-light)" opacity="0.45" filter="url(#wc-wash)"/>
+              <!-- Little Town -->
+              <g class="map-node" transform="translate(125, 92)" onclick="selectForecastTown('little_town')">
+                <rect x="-56" y="-26" width="112" height="52" rx="10" fill="var(--cream-paper)" stroke="var(--tertiary)" stroke-width="2"/>
+                <circle cx="-30" cy="0" r="11" fill="var(--sun-gold)"/>
+                <text x="14" y="-3" text-anchor="middle" font-size="12" font-weight="700" fill="var(--on-surface)">Little Town</text>
+                <text x="14" y="14" text-anchor="middle" font-size="11" fill="var(--tertiary)">Sunny</text>
+              </g>
+              <!-- Green Hill -->
+              <g class="map-node" transform="translate(375, 88)" onclick="selectForecastTown('green_hill')">
+                <rect x="-56" y="-26" width="112" height="52" rx="10" fill="var(--cream-paper)" stroke="var(--secondary)" stroke-width="2"/>
+                <path d="M -42 6 Q -36 -6 -26 -2 Q -18 -10 -10 2 Q -8 8 -14 8 L -38 8 Z" fill="var(--outline-variant)"/>
+                <text x="16" y="-3" text-anchor="middle" font-size="12" font-weight="700" fill="var(--on-surface)">Green Hill</text>
+                <text x="16" y="14" text-anchor="middle" font-size="11" fill="var(--secondary)">Cloudy</text>
+              </g>
+              <!-- Blue Lake -->
+              <g class="map-node" transform="translate(135, 192)" onclick="selectForecastTown('blue_lake')">
+                <rect x="-56" y="-26" width="112" height="52" rx="10" fill="var(--cream-paper)" stroke="var(--primary)" stroke-width="2"/>
+                <path d="M -42 -4 Q -30 -9 -18 -3 M -40 5 Q -28 0 -16 5" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round"/>
+                <text x="16" y="-3" text-anchor="middle" font-size="12" font-weight="700" fill="var(--on-surface)">Blue Lake</text>
+                <text x="16" y="14" text-anchor="middle" font-size="11" fill="var(--primary)">Windy</text>
+              </g>
+              <!-- Snowy Mountain -->
+              <g class="map-node" transform="translate(375, 192)" onclick="selectForecastTown('snowy_mountain')">
+                <rect x="-64" y="-26" width="128" height="52" rx="10" fill="var(--cream-paper)" stroke="var(--rain-deep)" stroke-width="2"/>
+                <polygon points="-48,8 -34,-12 -20,8" fill="var(--rain-sky)"/>
+                <polygon points="-39,-5 -34,-12 -29,-5" fill="var(--cream-paper)"/>
+                <text x="18" y="-3" text-anchor="middle" font-size="12" font-weight="700" fill="var(--on-surface)">Snowy Mtn</text>
+                <text x="18" y="14" text-anchor="middle" font-size="11" fill="var(--rain-deep)">Snowy</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="card">
+            <p class="kicker">Mini-Game 9 · Weather Map Listening Challenge</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+              <button type="button" class="btn-primary" onclick="playForecastChallenge()">
+                <i data-lucide="radio" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Listen to Report
+              </button>
+              <button type="button" class="btn-secondary" onclick="newForecastChallenge()">New Report</button>
+            </div>
+            <div class="feedback-banner" id="forecast-map-feedback" style="margin-top:8px;">
+              Press "Listen to Report", then click the town on the map!
+            </div>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <div class="card is-leaf-highlight">
+            <p class="kicker" style="color:var(--on-primary-container);">Studio Dialogue</p>
+            <p class="story-prose" style="color:var(--on-primary-container);margin-top:4px;">
+              <strong>Mia:</strong> "What's the weather like today?"<br>
+              <strong>Oliver:</strong> "It's sunny and warm!"<br>
+              <strong>Mia:</strong> "Great! Let's play outside!"
+            </p>
+            <button type="button" class="btn-secondary" style="margin-top:8px;" onclick="speakText(`What's the weather like today? It's sunny and warm. Great! Let's play outside!`)">
+              <i data-lucide="volume-2" style="width:18px;height:18px;" aria-hidden="true"></i>
+              Hear Dialogue
+            </button>
+          </div>
+
+          <div class="card">
+            <p class="kicker">Mini-Game 10 · Become a Weather Reporter</p>
+            <div id="reporter-a1-panel" style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+              <div class="field-group">
+                <label class="field-label" for="rep-weather">Today, the weather is:</label>
+                <select id="rep-weather" class="field-control" onchange="updateReporterPreview()">
+                  <option value="sunny and warm">sunny and warm</option>
+                  <option value="rainy and cool">rainy and cool</option>
+                  <option value="cloudy and mild">cloudy and mild</option>
+                  <option value="windy outside">windy outside</option>
+                  <option value="snowy and cold">snowy and cold</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="rep-place">Location:</label>
+                <select id="rep-place" class="field-control" onchange="updateReporterPreview()">
+                  <option value="Little Town">Little Town</option>
+                  <option value="Green Hill">Green Hill</option>
+                  <option value="Blue Lake">Blue Lake</option>
+                  <option value="Snowy Mountain">Snowy Mountain</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="reporter-a2-panel" style="display:none;flex-direction:column;gap:8px;margin-top:6px;">
+              <div class="field-group">
+                <label class="field-label" for="rep-custom">Write your own A2 weather report:</label>
+                <textarea id="rep-custom" class="field-control" rows="2" oninput="updateReporterPreview()">Hello, everyone! Today, the weather is sunny and warm in Little Town. Wear a hat! Thank you!</textarea>
+              </div>
+            </div>
+
+            <div class="card" style="background:var(--cream-paper);margin-top:10px;padding:12px;">
+              <p class="kicker">On-Air Teleprompter</p>
+              <p class="story-prose" id="reporter-preview" style="font-weight:700;margin-top:4px;">
+                "Hello, everyone! Today, the weather is sunny and warm. It is sunny in Little Town. Thank you!"
+              </p>
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+              <button type="button" class="btn-primary" onclick="broadcastMyReport()">
+                <i data-lucide="mic" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Broadcast My Report
+              </button>
+              <button type="button" class="btn-ochre" id="btn-voice-practice" onclick="startSpeakingPractice()">
+                Practice Speaking
+              </button>
+            </div>
+            <div class="feedback-banner" id="reporter-feedback" style="margin-top:8px;">
+              Build your report and press "Broadcast My Report"!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 8: CHAPTER 6 (WORLD WEATHER) & CHAPTER 7 (CHANGING WEATHER STORY) -->
+    <section class="story-page" data-page="7" aria-label="Page 8: World Weather and Story Timeline">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Chapter 6 · Weather Around the World</p>
+          <h2 class="page-heading">Different Places, Different Skies</h2>
+          <p class="story-prose">
+            Explore five places around the world! Notice how deserts, mountains, forests, beaches, and villages can have very different weather.
+          </p>
+
+          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="world-place-btns"></div>
+
+          <div class="card is-leaf-highlight" id="world-place-card">
+            <h3 class="page-heading" id="world-place-name" style="font-size:1.35rem;color:var(--on-primary-container);">Sunny Beach</h3>
+            <p class="story-prose" id="world-place-sentence" style="color:var(--on-primary-container);margin-top:4px;">
+              "It's hot and sunny at the beach."
+            </p>
+            <button type="button" class="btn-secondary" style="margin-top:8px;" onclick="speakWorldPlace()">
+              <i data-lucide="volume-2" style="width:18px;height:18px;" aria-hidden="true"></i>
+              Listen
+            </button>
+          </div>
+
+          <div class="card">
+            <p class="kicker">Compare Two Places</p>
+            <p class="story-prose" id="compare-question" style="font-weight:700;margin-top:4px;">Which place is colder?</p>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;" id="compare-options"></div>
+            <div class="feedback-banner" id="compare-feedback" style="margin-top:8px;">Pick the correct place!</div>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <p class="kicker">Chapter 7 · A Day of Changing Weather</p>
+          <h2 class="page-heading">From Morning Sun to Rainbow</h2>
+
+          <!-- Timeline Stepper -->
+          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="story-timeline-btns"></div>
+
+          <div class="scene-stage" id="ch7-stage">
+            <svg viewBox="0 0 520 220" role="img" aria-label="Storybook scene from A Day of Changing Weather">
+              <rect id="ch7-sky" width="520" height="220" fill="url(#sky-sunny-grad)"/>
+              <path id="ch7-rainbow" d="M 110 175 A 150 140 0 0 1 410 175" fill="none" stroke="url(#rainbow-grad)" stroke-width="16" opacity="0" filter="url(#wc-wash)"/>
+              <circle id="ch7-sun" cx="105" cy="58" r="26" fill="var(--sun-gold)"/>
+              <g id="ch7-clouds" class="anim-cloud" opacity="0.25">
+                <path d="M 185 68 Q 202 40 232 48 Q 256 28 286 46 Q 312 46 318 68 Z" fill="var(--cream-paper)" filter="url(#wc-wash)"/>
+              </g>
+              <g id="ch7-rain" opacity="0" stroke="var(--rain-drop)" stroke-width="2.8" stroke-linecap="round">
+                <line class="anim-rain" x1="145" y1="80" x2="138" y2="108"/>
+                <line class="anim-rain" x1="235" y1="82" x2="228" y2="110" style="animation-delay:0.25s"/>
+                <line class="anim-rain" x1="335" y1="78" x2="328" y2="106" style="animation-delay:0.4s"/>
+              </g>
+              <path d="M 0 165 Q 170 140 340 165 T 520 155 L 520 220 L 0 220 Z" fill="var(--meadow-mid)" filter="url(#wc-wash)"/>
+              <g id="ch7-tree" class="anim-sway" transform="translate(410, 110)">
+                <rect x="10" y="30" width="8" height="30" fill="var(--wood-warm)"/>
+                <circle cx="14" cy="20" r="22" fill="var(--meadow-deep)"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="card is-leaf-highlight">
+            <p class="story-prose" id="ch7-story-text" style="color:var(--on-primary-container);font-weight:700;">
+              Scene 1 (Morning): The sun shines warmly. "It's sunny this morning."
+            </p>
+            <button type="button" class="btn-secondary" style="margin-top:8px;" onclick="speakStoryScene()">
+              <i data-lucide="volume-2" style="width:18px;height:18px;" aria-hidden="true"></i>
+              Read Scene Aloud
+            </button>
+          </div>
+
+          <div class="card">
+            <p class="kicker">Mini-Game 8 · What Happens Next?</p>
+            <p class="story-prose" style="font-size:0.95rem;margin-top:4px;" id="next-event-prompt">
+              Dark clouds just filled the sky. What usually happens next?
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="next-event-options"></div>
+            <div class="feedback-banner" id="next-event-feedback" style="margin-top:8px;">Choose the next weather event!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 9: CHAPTER 8 (WEATHER CHAT) & ARCADE MINI-GAMES -->
+    <section class="story-page" data-page="8" aria-label="Page 9: Weather Chat and Mini-Games">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Chapter 8 · Weather Chat Adventure</p>
+          <h2 class="page-heading">Chat with Friends</h2>
+          <p class="story-prose">
+            Tap any message bubble to hear it aloud, then pick the best reply to keep the chat going!
+          </p>
+
+          <div class="chat-window" id="chat-window"></div>
+
+          <div class="card">
+            <p class="kicker">Choose Your Reply</p>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;" id="chat-choices"></div>
+            <button type="button" class="btn-secondary" style="margin-top:8px;min-height:38px;" onclick="resetChat()">Restart Chat</button>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <p class="kicker">Mini-Game 6 · Complete the Sentence</p>
+          <div class="card">
+            <p class="story-prose" id="sentence-prompt" style="font-weight:700;font-size:1.1rem;">
+              "Take your umbrella! It's ______ today."
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="sentence-options"></div>
+            <div class="feedback-banner" id="sentence-feedback" style="margin-top:8px;">Pick the missing word!</div>
+          </div>
+
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div>
+                <p class="kicker">Mini-Game 7 · Weather Memory</p>
+                <h3 class="page-heading" style="font-size:1.25rem;">Match the Pairs</h3>
+              </div>
+              <button type="button" class="btn-secondary" style="min-height:36px;padding:4px 12px;" onclick="initMemoryGame()">Shuffle</button>
+            </div>
+            <div class="memory-grid" id="memory-grid" style="margin-top:var(--space-sm);"></div>
+            <div class="feedback-banner" id="memory-feedback" style="margin-top:8px;">Flip two cards to find matching pairs!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 10: REAL-LIFE WEATHER JOURNAL & CERTIFICATE -->
+    <section class="story-page" data-page="9" aria-label="Page 10: My Weather Journal and Explorer Certificate">
+      <div class="spread-grid">
+        <div class="page-col">
+          <p class="kicker">Real-Life Connection · Look Outside Your Window</p>
+          <h2 class="page-heading">What's the Weather Like Today?</h2>
+          <p class="story-prose">
+            Look outside your window right now! Record today's real weather in your English Weather Journal.
+          </p>
+
+          <div class="card">
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+              <div class="field-group">
+                <label class="field-label" for="j-day">Today is</label>
+                <select id="j-day" class="field-control">
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="j-weather">The weather is</label>
+                <select id="j-weather" class="field-control">
+                  <option value="sunny">Sunny</option>
+                  <option value="rainy">Rainy</option>
+                  <option value="cloudy">Cloudy</option>
+                  <option value="windy">Windy</option>
+                  <option value="stormy">Stormy</option>
+                  <option value="hot">Hot</option>
+                  <option value="cold">Cold</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="j-feel">I feel</label>
+                <select id="j-feel" class="field-control">
+                  <option value="happy">happy</option>
+                  <option value="excited">excited</option>
+                  <option value="cozy">cozy</option>
+                  <option value="calm">calm</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="j-wear">I wear / use</label>
+                <select id="j-wear" class="field-control">
+                  <option value="a T-shirt">a T-shirt</option>
+                  <option value="my umbrella">my umbrella</option>
+                  <option value="a warm jacket">a warm jacket</option>
+                  <option value="a sweater">a sweater</option>
+                  <option value="a hat">a hat</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-top:10px;">
+              <label class="field-label" for="j-name">Your Name (for Journal &amp; Certificate)</label>
+              <input type="text" id="j-name" class="field-control" value="Little Explorer" oninput="updateCertificateName()">
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+              <button type="button" class="btn-primary" onclick="saveJournalEntry()">Save Journal Entry</button>
+              <button type="button" class="btn-secondary" onclick="speakJournalPreview()">Read Journal Aloud</button>
+            </div>
+          </div>
+
+          <div class="card" id="journal-history-card">
+            <p class="kicker">Saved Weather Journal Entries</p>
+            <div id="journal-list" style="margin-top:6px;display:flex;flex-direction:column;gap:6px;">
+              <p class="story-prose" style="font-size:0.9rem;">No entries yet. Look outside and save today's weather!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-col">
+          <p class="kicker">Adventure Reward</p>
+          <h2 class="page-heading">Weather Explorer Certificate</h2>
+
+          <div class="card is-leaf-highlight" style="border:3px double var(--tertiary);text-align:center;padding:var(--space-lg);">
+            <p class="kicker" style="color:var(--on-primary-container);">Official Certificate of Weatherland</p>
+            <h3 style="font-family:var(--font-headline);font-size:1.75rem;margin:8px 0;color:var(--on-primary-container);" id="cert-student-name">
+              Little Explorer
+            </h3>
+            <p class="story-prose" style="color:var(--on-primary-container);margin:0 auto;">
+              has explored Weatherland with <strong class="companion-name">Mia</strong>, learned English weather words, and practiced real-world weather reporting!
+            </p>
+            <div style="margin:14px 0;font-family:var(--font-label);font-size:0.9rem;color:var(--on-primary-container);" id="cert-stats">
+              Words Learned: 1/11 · Stickers Earned: 0/7
+            </div>
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+              <button type="button" class="btn-primary" onclick="downloadCertificate()">
+                <i data-lucide="download" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Save Certificate (.txt)
+              </button>
+              <button type="button" class="btn-secondary" onclick="speakText(`Congratulations! You are an official Weatherland Explorer!`)">
+                <i data-lucide="sparkles" style="width:18px;height:18px;" aria-hidden="true"></i>
+                Celebrate!
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="kicker">Reset Adventure Progress</p>
+            <p class="story-prose" style="font-size:0.9rem;margin-top:4px;">
+              Want to start the storybook fresh from Page 1?
+            </p>
+            <button type="button" class="btn-secondary" style="margin-top:8px;" id="reset-progress-btn" onclick="resetAllProgress(this)">
+              Reset Progress
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Prominent Page-Turning Navigation Bar -->
+  <nav class="page-nav-footer" aria-label="Page by page navigation">
+    <button type="button" class="nav-page-btn is-prev" id="btn-prev-page" onclick="prevPage()" disabled>
+      <i data-lucide="chevron-left" style="width:22px;height:22px;" aria-hidden="true"></i>
+      Previous Page
+    </button>
+
+    <div class="page-indicator-center">
+      <strong id="footer-page-title">Cover Story</strong>
+      <span id="footer-page-num">Page 1 of 10</span>
+    </div>
+
+    <button type="button" class="nav-page-btn" id="btn-next-page" onclick="nextPage()">
+      Next Page
+      <i data-lucide="chevron-right" style="width:22px;height:22px;" aria-hidden="true"></i>
+    </button>
+  </nav>
+
+</div>
+
+<api-shim></api-shim>
+<script>
+/* =========================================================
+   THE MAGICAL WEATHER JOURNEY — Interactive Engine
+   ========================================================= */
+
+const PAGE_TITLES = [
+  `Cover Story`,
+  `Weatherland Map`,
+  `Ch. 1: Discover Weather`,
+  `Ch. 2: Weather Explorer`,
+  `Ch. 3: Weather Machine`,
+  `Ch. 4: What Should I Wear?`,
+  `Ch. 5: Forecast Studio`,
+  `Ch. 6–7: World & Story`,
+  `Ch. 8: Chat & Mini-Games`,
+  `Journal & Certificate`
+];
+
+const STICKERS = [
+  { id: `sunny_meadow`, name: `Sunny Meadow` },
+  { id: `weather_detective`, name: `Sound Detective` },
+  { id: `weather_wizard`, name: `Weather Wizard` },
+  { id: `wardrobe_star`, name: `Wardrobe Star` },
+  { id: `tv_reporter`, name: `TV Reporter` },
+  { id: `world_traveler`, name: `World Traveler` },
+  { id: `journal_keeper`, name: `Journal Keeper` }
+];
+
+const MAP_PLACES = {
+  sunny_meadow: { title: `Sunny Meadow`, desc: `Bright golden sunlight shines on colorful wildflowers. Tap Visit Chapter to learn 11 weather words!`, page: 2, sfx: `birds` },
+  cloudy_hill: { title: `Cloudy Hill`, desc: `Soft fluffy clouds drift slowly across a calm muted sky.`, page: 3, sfx: `chime` },
+  rainy_village: { title: `Rainy Village`, desc: `Gentle raindrops splash in puddles while children open colorful umbrellas.`, page: 3, sfx: `rain` },
+  windy_forest: { title: `Windy Forest`, desc: `Autumn leaves dance through the air and kites soar above the swaying trees!`, page: 4, sfx: `wind` },
+  stormy_mountain: { title: `Stormy Mountain`, desc: `Dramatic dark clouds rumble with thunder. Remember to stay safe indoors!`, page: 4, sfx: `thunder` },
+  snowy_town: { title: `Snowy Town`, desc: `Soft white snowflakes blanket cozy cottages and cheerful snowmen.`, page: 5, sfx: `chime` },
+  rainbow_garden: { title: `Rainbow Garden`, desc: `After the rain stops, a magical rainbow arches over the garden.`, page: 7, sfx: `chime` }
+};
+
+const VOCAB_DATA = [
+  { key: `sunny`, word: `Sunny`, sentence: `It's sunny today.`, id: `Cerah`, sky: `url(#sky-sunny-grad)`, sun: 1, clouds: 0.3, rain: 0, snow: 0, fog: 0, lightning: 0, leaves: 0, thermY: 22, thermColor: `var(--muted-orange)`, sfx: `birds` },
+  { key: `rainy`, word: `Rainy`, sentence: `It's rainy today.`, id: `Hujan`, sky: `url(#sky-rain-grad)`, sun: 0, clouds: 0.95, rain: 1, snow: 0, fog: 0, lightning: 0, leaves: 0, thermY: 42, thermColor: `var(--rain-drop)`, sfx: `rain` },
+  { key: `cloudy`, word: `Cloudy`, sentence: `It's cloudy.`, id: `Berawan`, sky: `var(--rain-sky)`, sun: 0.2, clouds: 1, rain: 0, snow: 0, fog: 0, lightning: 0, leaves: 0, thermY: 38, thermColor: `var(--secondary)`, sfx: `chime` },
+  { key: `windy`, word: `Windy`, sentence: `It's windy.`, id: `Berangin`, sky: `url(#sky-sunny-grad)`, sun: 0.65, clouds: 0.75, rain: 0, snow: 0, fog: 0, lightning: 0, leaves: 1, thermY: 40, thermColor: `var(--primary)`, sfx: `wind` },
+  { key: `stormy`, word: `Stormy`, sentence: `It's stormy.`, id: `Badai`, sky: `url(#sky-storm-grad)`, sun: 0, clouds: 1, rain: 1, snow: 0, fog: 0, lightning: 1, leaves: 1, thermY: 44, thermColor: `var(--error)`, sfx: `thunder` },
+  { key: `snowy`, word: `Snowy`, sentence: `It's snowy.`, id: `Bersalju`, sky: `url(#sky-snow-grad)`, sun: 0, clouds: 0.8, rain: 0, snow: 1, fog: 0, lightning: 0, leaves: 0, thermY: 54, thermColor: `var(--sky-zenith)`, sfx: `chime` },
+  { key: `foggy`, word: `Foggy`, sentence: `It's foggy today.`, id: `Berkabut`, sky: `var(--fog-mist)`, sun: 0.15, clouds: 0.6, rain: 0, snow: 0, fog: 0.72, lightning: 0, leaves: 0, thermY: 45, thermColor: `var(--secondary)`, sfx: `wind` },
+  { key: `hot`, word: `Hot`, sentence: `It's hot today.`, id: `Panas`, sky: `url(#sky-sunny-grad)`, sun: 1, clouds: 0.1, rain: 0, snow: 0, fog: 0, lightning: 0, leaves: 0, thermY: 8, thermColor: `var(--error)`, sfx: `birds` },
+  { key: `cold`, word: `Cold`, sentence: `It's cold today.`, id: `Dingin`, sky: `url(#sky-snow-grad)`, sun: 0.25, clouds: 0.5, rain: 0, snow: 0.6, fog: 0, lightning: 0, leaves: 0, thermY: 56, thermColor: `var(--rain-deep)`, sfx: `wind` },
+  { key: `warm`, word: `Warm`, sentence: `It's warm today.`, id: `Hangat`, sky: `url(#sky-sunny-grad)`, sun: 0.9, clouds: 0.35, rain: 0, snow: 0, fog: 0, lightning: 0, leaves: 0, thermY: 20, thermColor: `var(--muted-orange)`, sfx: `birds` },
+  { key: `cool`, word: `Cool`, sentence: `It's cool today.`, id: `Sejuk`, sky: `var(--sky-day)`, sun: 0.5, clouds: 0.65, rain: 0, snow: 0, fog: 0, lightning: 0, leaves: 0.5, thermY: 36, thermColor: `var(--primary)`, sfx: `wind` }
+];
+
+const CH2_SCENES = [
+  { key: `sunny`, label: `Sunny Day`, answer: `It's sunny!`, safety: `Tip: Wear a hat and drink water on hot sunny days.`, sky: `url(#sky-sunny-grad)`, sun: 1, cloud: 0.3, rain: 0, snow: 0, lightning: 0, kite: 0, snowman: 0, umbrella: 0, ground: `var(--meadow-mid)`, sfx: `birds` },
+  { key: `rainy`, label: `Rainy Day`, answer: `It's rainy!`, safety: `Tip: Carry an umbrella and wear rain boots!`, sky: `url(#sky-rain-grad)`, sun: 0, cloud: 0.95, rain: 1, snow: 0, lightning: 0, kite: 0, snowman: 0, umbrella: 1, ground: `var(--meadow-deep)`, sfx: `rain` },
+  { key: `windy`, label: `Windy Day`, answer: `It's windy!`, safety: `Tip: Hold onto your hat—windy days are great for kites!`, sky: `url(#sky-sunny-grad)`, sun: 0.7, cloud: 0.7, rain: 0, snow: 0, lightning: 0, kite: 1, snowman: 0, umbrella: 0, ground: `var(--meadow-light)`, sfx: `wind` },
+  { key: `cloudy`, label: `Cloudy Day`, answer: `It's cloudy!`, safety: `Tip: Large gray clouds cover the sun, making the air cool.`, sky: `var(--rain-sky)`, sun: 0, cloud: 1, rain: 0, snow: 0, lightning: 0, kite: 0, snowman: 0, umbrella: 0, ground: `var(--meadow-mid)`, sfx: `chime` },
+  { key: `snowy`, label: `Snowy Day`, answer: `It's snowy!`, safety: `Tip: Put on a warm coat, scarf, and gloves before playing in snow!`, sky: `url(#sky-snow-grad)`, sun: 0, cloud: 0.85, rain: 0, snow: 1, lightning: 0, kite: 0, snowman: 1, umbrella: 0, ground: `var(--snow-hill)`, sfx: `chime` },
+  { key: `stormy`, label: `Stormy Day`, answer: `It's stormy!`, safety: `Safety Reminder: Stay indoors and away from tall trees during lightning!`, sky: `url(#sky-storm-grad)`, sun: 0, cloud: 1, rain: 1, snow: 0, lightning: 1, kite: 0, snowman: 0, umbrella: 0, ground: `var(--storm-cloud)`, sfx: `thunder` }
+];
+
+const SOUND_MYSTERIES = [
+  { key: `sunny`, label: `Sunny (Birds)`, sfx: `birds` },
+  { key: `rainy`, label: `Rainy (Raindrops)`, sfx: `rain` },
+  { key: `windy`, label: `Windy (Breeze)`, sfx: `wind` },
+  { key: `stormy`, label: `Stormy (Thunder)`, sfx: `thunder` }
+];
+
+const DETECTIVE_CLUES = [
+  { clue: `Children are flying a kite and leaves are blowing in the air!`, answer: `Windy` },
+  { clue: `People are holding colorful umbrellas and stepping over puddles.`, answer: `Rainy` },
+  { clue: `Snowflakes are falling and children are building a snowman!`, answer: `Snowy` },
+  { clue: `Dark clouds fill the sky and distant lightning flashes. Stay indoors!`, answer: `Stormy` }
+];
+
+const WEATHER_MACHINE_MISSIONS = [
+  { target: `snowy`, prompt: `Mission: Make the sky snowy so we can build a snowman!` },
+  { target: `rainy`, prompt: `Mission: Make it rainy so the garden flowers get water!` },
+  { target: `windy`, prompt: `Mission: Make it windy so the kite can fly high!` },
+  { target: `stormy`, prompt: `Mission: Create a dramatic storm with thunder and lightning!` },
+  { target: `sunny`, prompt: `Mission: Bring back bright sunshine to Weatherland!` }
+];
+
+const CLOTHING_ITEMS = [
+  { id: `tshirt`, name: `T-shirt` },
+  { id: `shorts`, name: `Shorts` },
+  { id: `sunglasses`, name: `Sunglasses` },
+  { id: `sandals`, name: `Sandals` },
+  { id: `hat`, name: `Hat` },
+  { id: `raincoat`, name: `Raincoat` },
+  { id: `umbrella`, name: `Umbrella` },
+  { id: `boots`, name: `Boots` },
+  { id: `sweater`, name: `Sweater` },
+  { id: `jacket`, name: `Jacket` },
+  { id: `scarf`, name: `Scarf` },
+  { id: `gloves`, name: `Gloves` }
+];
+
+const DRESS_MISSIONS = [
+  { title: `Mission 1 of 3 · Sunny Day`, q: `It's sunny and hot! What should your companion wear?`, needed: [`tshirt`, `sunglasses`], expr: `I wear a T-shirt and sunglasses when it's sunny.` },
+  { title: `Mission 2 of 3 · Rainy Day`, q: `It's rainy outside! What should your companion bring and wear?`, needed: [`raincoat`, `umbrella`], expr: `I use an umbrella and wear a raincoat when it rains.` },
+  { title: `Mission 3 of 3 · Cold Day`, q: `It's cold and snowy! What keeps your companion warm?`, needed: [`sweater`, `scarf`, `gloves`], expr: `I wear a sweater, scarf, and gloves when it's cold.` }
+];
+
+const FORECAST_CHALLENGES = [
+  { town: `little_town`, text: `Good morning! It is sunny and warm in Little Town today.` },
+  { town: `green_hill`, text: `Look up! It is cloudy and cool over Green Hill.` },
+  { town: `blue_lake`, text: `Hold your hat! It is very windy near Blue Lake.` },
+  { town: `snowy_mountain`, text: `Bundle up! It is snowy and cold on Snowy Mountain.` }
+];
+
+const WORLD_PLACES = [
+  { id: `beach`, name: `Sunny Beach`, sentence: `It's hot and sunny at the beach.`, temp: `hot` },
+  { id: `village`, name: `Rainy Tropical Village`, sentence: `It's rainy and warm in the village.`, temp: `warm` },
+  { id: `mountain`, name: `Snowy Mountain`, sentence: `It's cold in the snowy mountains.`, temp: `cold` },
+  { id: `countryside`, name: `Windy Countryside`, sentence: `It's windy near the sea and hills.`, temp: `cool` },
+  { id: `forest`, name: `Foggy Forest`, sentence: `It's foggy and cool in the morning forest.`, temp: `cool` }
+];
+
+const COMPARE_QUESTIONS = [
+  { q: `Which place is colder?`, a: `Snowy Mountain`, b: `Sunny Beach`, correct: `Snowy Mountain` },
+  { q: `Which place is hotter?`, a: `Sunny Beach`, b: `Foggy Forest`, correct: `Sunny Beach` },
+  { q: `Where do you need an umbrella?`, a: `Rainy Tropical Village`, b: `Sunny Beach`, correct: `Rainy Tropical Village` }
+];
+
+const CH7_SCENES = [
+  { label: `1. Morning`, text: `Scene 1 (Morning): The sun shines warmly. "It's sunny this morning."`, sky: `url(#sky-sunny-grad)`, sun: 1, clouds: 0.2, rain: 0, rainbow: 0, swayStrong: false, sfx: `birds` },
+  { label: `2. Afternoon`, text: `Scene 2 (Afternoon): Big gray clouds gather. "Look! It's cloudy now."`, sky: `var(--rain-sky)`, sun: 0, clouds: 0.95, rain: 0, rainbow: 0, swayStrong: false, sfx: `chime` },
+  { label: `3. Rain`, text: `Scene 3 (Rain): Raindrops begin to fall. "Oh no! It's rainy!"`, sky: `url(#sky-rain-grad)`, sun: 0, clouds: 1, rain: 1, rainbow: 0, swayStrong: false, sfx: `rain` },
+  { label: `4. Wind`, text: `Scene 4 (Wind): Strong wind moves the trees. "It's windy!"`, sky: `var(--rain-sky)`, sun: 0.2, clouds: 0.8, rain: 0.3, rainbow: 0, swayStrong: true, sfx: `wind` },
+  { label: `5. Evening`, text: `Scene 5 (Evening): The rain stops and a rainbow appears. "Look at the beautiful rainbow!"`, sky: `url(#sky-sunset-grad)`, sun: 0.6, clouds: 0.3, rain: 0, rainbow: 0.9, swayStrong: false, sfx: `chime` }
+];
+
+const NEXT_EVENTS = [
+  { prompt: `Dark clouds just filled the sky. What usually happens next?`, choices: [`Rain begins to fall`, `Snowmen melt instantly`], correct: `Rain begins to fall` },
+  { prompt: `The rain stops and the sun peeks through! What can appear in the sky?`, choices: [`A colorful rainbow`, `A midnight blizzard`], correct: `A colorful rainbow` }
+];
+
+const SENTENCE_GAMES = [
+  { prompt: `Take your umbrella! It's ______ today.`, opts: [`rainy`, `sunny`, `hot`], correct: `rainy` },
+  { prompt: `Let's fly a kite! It's ______ outside.`, opts: [`windy`, `foggy`, `snowy`], correct: `windy` },
+  { prompt: `Put on your warm gloves! It's ______ today.`, opts: [`cold`, `hot`, `warm`], correct: `cold` }
+];
+
+const CHAT_SCRIPT = [
+  {
+    messages: [
+      { who: `Mia`, text: `Good morning! What's the weather like today?` }
+    ],
+    choices: [
+      { text: `It's sunny and warm!`, ok: true, reply: `Great! Let's go to the park!` },
+      { text: `It's a banana!`, ok: false, reply: `Haha! Try a weather sentence!` }
+    ]
+  },
+  {
+    messages: [
+      { who: `Oliver`, text: `Look outside! Dark clouds are coming and it's raining!` }
+    ],
+    choices: [
+      { text: `Don't forget your umbrella!`, ok: true, reply: `Good idea! I have my raincoat too.` },
+      { text: `Let's wear sandals in the rain!`, ok: false, reply: `Wait—our feet would get wet! Try again.` }
+    ]
+  }
+];
+
+/* App State */
+const appState = {
+  page: 0,
+  companion: `Mia`,
+  level: `A1`,
+  musicOn: false,
+  soundOn: true,
+  stickers: [],
+  learnedVocab: [`sunny`],
+  mapPlace: `sunny_meadow`,
+  ch2Scene: 0,
+  soundMysteryIdx: 0,
+  detectiveIdx: 0,
+  machineWeather: `sunny`,
+  machineMissionIdx: 0,
+  wornClothes: [`tshirt`, `shorts`],
+  dressMissionIdx: 0,
+  forecastTargetIdx: 0,
+  worldPlaceIdx: 0,
+  compareIdx: 0,
+  storySceneIdx: 0,
+  nextEventIdx: 0,
+  chatStep: 0,
+  chatLog: [],
+  sentenceIdx: 0,
+  studentName: `Little Explorer`,
+  journalEntries: []
+};
+
+/* Web Audio Procedural Sound Engine */
+let audioCtx = null;
+let musicInterval = null;
+
+function ensureAudioCtx() {
+  if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new Ctx();
+  }
+  if (audioCtx && audioCtx.state === `suspended`) {
+    audioCtx.resume().catch(() => {});
+  }
+  return audioCtx;
+}
+
+function playToneSfx(type) {
+  if (!appState.soundOn) return;
+  const ctx = ensureAudioCtx();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  if (type === `chime` || type === `success`) {
+    const notes = type === `success` ? [523.25, 659.25, 783.99, 1046.5] : [523.25, 659.25, 783.99];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = `sine`;
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      gain.gain.setValueAtTime(0.001, now + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.11, now + i * 0.08 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.38);
+    });
+  } else if (type === `birds`) {
+    [0, 0.22].forEach((offset) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = `sine`;
+      osc.frequency.setValueAtTime(2100, now + offset);
+      osc.frequency.exponentialRampToValueAtTime(3200, now + offset + 0.09);
+      osc.frequency.exponentialRampToValueAtTime(2400, now + offset + 0.16);
+      gain.gain.setValueAtTime(0.001, now + offset);
+      gain.gain.linearRampToValueAtTime(0.07, now + offset + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.18);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.2);
+    });
+  } else if (type === `rain` || type === `wind` || type === `page`) {
+    const dur = type === `page` ? 0.14 : 0.75;
+    const bufferSize = Math.floor(ctx.sampleRate * dur);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = `bandpass`;
+    filter.frequency.setValueAtTime(type === `rain` ? 1500 : type === `page` ? 1100 : 420, now);
+    if (type === `wind`) filter.frequency.linearRampToValueAtTime(760, now + dur * 0.5);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(type === `page` ? 0.04 : 0.09, now + 0.06);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    src.start(now);
+  } else if (type === `thunder`) {
+    const bufferSize = Math.floor(ctx.sampleRate * 1.1);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = `lowpass`;
+    filter.frequency.setValueAtTime(170, now);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.08);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    src.start(now);
+  }
+}
+
+function speakText(text) {
+  if (!appState.soundOn) return;
+  if (`speechSynthesis` in window) {
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = `en-US`;
+      utter.rate = 0.88;
+      utter.pitch = 1.05;
+      window.speechSynthesis.speak(utter);
+    } catch (e) {
+      playToneSfx(`chime`);
+    }
+  } else {
+    playToneSfx(`chime`);
+  }
+}
+
+function toggleMusic() {
+  appState.musicOn = !appState.musicOn;
+  const btn = document.getElementById(`btn-music`);
+  if (btn) {
+    btn.classList.toggle(`is-on`, appState.musicOn);
+    btn.setAttribute(`aria-pressed`, String(appState.musicOn));
+    const span = btn.querySelector(`span`);
+    if (span) span.textContent = appState.musicOn ? `Music: On` : `Music: Off`;
+  }
+  if (appState.musicOn) {
+    ensureAudioCtx();
+    const scale = [392.0, 440.0, 523.25, 587.33, 659.25, 523.25, 440.0, 392.0];
+    let step = 0;
+    if (musicInterval) clearInterval(musicInterval);
+    musicInterval = setInterval(() => {
+      if (!appState.musicOn || !audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = `triangle`;
+      osc.frequency.setValueAtTime(scale[step % scale.length], now);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.035, now + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.7);
+      step++;
+    }, 680);
+  } else if (musicInterval) {
+    clearInterval(musicInterval);
+    musicInterval = null;
+  }
+  saveState();
+}
+
+function toggleSound() {
+  appState.soundOn = !appState.soundOn;
+  const btn = document.getElementById(`btn-sfx`);
+  if (btn) {
+    btn.classList.toggle(`is-on`, appState.soundOn);
+    btn.setAttribute(`aria-pressed`, String(appState.soundOn));
+    const span = btn.querySelector(`span`);
+    if (span) span.textContent = appState.soundOn ? `Sound: On` : `Sound: Off`;
+  }
+  if (appState.soundOn) playToneSfx(`chime`);
+  saveState();
+}
+
+/* State Persistence via notebookAppApi */
+async function saveState() {
+  if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+    try {
+      await window.notebookAppApi.setAppState({
+        page: appState.page,
+        companion: appState.companion,
+        level: appState.level,
+        stickers: appState.stickers,
+        learnedVocab: appState.learnedVocab,
+        wornClothes: appState.wornClothes,
+        studentName: appState.studentName,
+        journalEntries: appState.journalEntries
+      });
+    } catch (e) {}
+  }
+}
+
+async function loadState() {
+  if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+    try {
+      const saved = await window.notebookAppApi.getAppState();
+      if (saved) {
+        if (typeof saved.page === `number`) appState.page = Math.max(0, Math.min(9, saved.page));
+        if (saved.companion) appState.companion = saved.companion;
+        if (saved.level) appState.level = saved.level;
+        if (Array.isArray(saved.stickers)) appState.stickers = saved.stickers;
+        if (Array.isArray(saved.learnedVocab) && saved.learnedVocab.length) appState.learnedVocab = saved.learnedVocab;
+        if (Array.isArray(saved.wornClothes)) appState.wornClothes = saved.wornClothes;
+        if (saved.studentName) appState.studentName = saved.studentName;
+        if (Array.isArray(saved.journalEntries)) appState.journalEntries = saved.journalEntries;
+      }
+    } catch (e) {}
+  }
+}
+
+/* Stickers & Progress */
+function awardSticker(stickerId) {
+  if (!appState.stickers.includes(stickerId)) {
+    appState.stickers.push(stickerId);
+    playToneSfx(`success`);
+    renderStickers();
+    updateCertificateStats();
+    saveState();
+  }
+}
+
+function renderStickers() {
+  const countEl = document.getElementById(`sticker-count-label`);
+  if (countEl) countEl.textContent = `Stickers: ${appState.stickers.length} / ${STICKERS.length}`;
+  const grid = document.getElementById(`sticker-grid`);
+  if (!grid) return;
+  grid.innerHTML = STICKERS.map((s) => {
+    const earned = appState.stickers.includes(s.id);
+    return `<div class="sticker-badge ${earned ? `is-earned` : ``}">${earned ? `★ ` : ``}${s.name}</div>`;
+  }).join(``);
+}
+
+function toggleStickerDrawer() {
+  const d = document.getElementById(`sticker-drawer`);
+  if (d) d.classList.toggle(`is-open`);
+}
+
+/* Page-Turning Navigation */
+function renderPageDots() {
+  const dotsEl = document.getElementById(`page-dots`);
+  if (!dotsEl) return;
+  dotsEl.innerHTML = PAGE_TITLES.map((t, idx) => {
+    const cls = idx === appState.page ? `page-dot is-current` : idx < appState.page ? `page-dot is-done` : `page-dot`;
+    return `<button type="button" class="${cls}" title="${t}" onclick="goToPage(${idx})">${idx + 1}</button>`;
+  }).join(``);
+}
+
+function goToPage(idx) {
+  if (idx < 0 || idx >= PAGE_TITLES.length) return;
+  appState.page = idx;
+  playToneSfx(`page`);
+
+  const pages = document.querySelectorAll(`.story-page`);
+  pages.forEach((p, i) => {
+    p.classList.toggle(`is-active`, i === idx);
+  });
+
+  const stripName = document.getElementById(`strip-chapter-name`);
+  if (stripName) stripName.textContent = PAGE_TITLES[idx];
+
+  const footerTitle = document.getElementById(`footer-page-title`);
+  const footerNum = document.getElementById(`footer-page-num`);
+  if (footerTitle) footerTitle.textContent = PAGE_TITLES[idx];
+  if (footerNum) footerNum.textContent = `Page ${idx + 1} of ${PAGE_TITLES.length}`;
+
+  const prevBtn = document.getElementById(`btn-prev-page`);
+  const nextBtn = document.getElementById(`btn-next-page`);
+  if (prevBtn) prevBtn.disabled = idx === 0;
+  if (nextBtn) {
+    nextBtn.disabled = idx === PAGE_TITLES.length - 1;
+    nextBtn.innerHTML = idx === PAGE_TITLES.length - 1
+      ? `The End <i data-lucide="award" style="width:20px;height:20px;" aria-hidden="true"></i>`
+      : `Next Page <i data-lucide="chevron-right" style="width:22px;height:22px;" aria-hidden="true"></i>`;
+  }
+
+  renderPageDots();
+  if (window.lucide) lucide.createIcons();
+  window.scrollTo({ top: 0, behavior: `smooth` });
+  saveState();
+}
+
+function nextPage() { goToPage(appState.page + 1); }
+function prevPage() { goToPage(appState.page - 1); }
+
+/* Companion & Level */
+function chooseCompanion(name) {
+  appState.companion = name;
+  const badge = document.getElementById(`companion-badge`);
+  if (badge) badge.textContent = `Guide: ${name}`;
+  const miaCard = document.getElementById(`pick-mia`);
+  const oliCard = document.getElementById(`pick-oliver`);
+  if (miaCard) miaCard.classList.toggle(`is-selected`, name === `Mia`);
+  if (oliCard) oliCard.classList.toggle(`is-selected`, name === `Oliver`);
+
+  document.querySelectorAll(`.companion-name`).forEach((el) => { el.textContent = name; });
+  const hairEl = document.getElementById(`dressup-hair`);
+  if (hairEl) hairEl.setAttribute(`fill`, name === `Mia` ? `var(--hair-mia)` : `var(--hair-oliver)`);
+  speakText(`Hi! I am ${name}. Let's explore Weatherland together!`);
+  saveState();
+}
+
+function setLevel(lvl) {
+  appState.level = lvl;
+  const b1 = document.getElementById(`btn-level-a1`);
+  const b2 = document.getElementById(`btn-level-a2`);
+  if (b1) b1.classList.toggle(`is-active`, lvl === `A1`);
+  if (b2) b2.classList.toggle(`is-active`, lvl === `A2`);
+
+  const p1 = document.getElementById(`reporter-a1-panel`);
+  const p2 = document.getElementById(`reporter-a2-panel`);
+  if (p1) p1.style.display = lvl === `A1` ? `flex` : `none`;
+  if (p2) p2.style.display = lvl === `A2` ? `flex` : `none`;
+  updateReporterPreview();
+  saveState();
+}
+
+/* Page 2: Map Interactions */
+function selectMapPlace(key) {
+  appState.mapPlace = key;
+  const info = MAP_PLACES[key];
+  if (!info) return;
+  const t = document.getElementById(`map-place-title`);
+  const d = document.getElementById(`map-place-desc`);
+  if (t) t.textContent = info.title;
+  if (d) d.textContent = info.desc;
+  playToneSfx(info.sfx);
+  speakText(`${info.title}. ${info.desc}`);
+}
+function jumpFromMap() {
+  const info = MAP_PLACES[appState.mapPlace];
+  if (info) goToPage(info.page);
+}
+function speakMapPlace() {
+  const info = MAP_PLACES[appState.mapPlace];
+  if (info) speakText(`${info.title}. ${info.desc}`);
+}
+
+/* Page 3: Chapter 1 Vocabulary */
+let currentVocabIdx = 0;
+
+function renderVocabGrid() {
+  const grid = document.getElementById(`vocab-chip-grid`);
+  if (!grid) return;
+  grid.innerHTML = VOCAB_DATA.map((v, i) => {
+    const isAct = i === currentVocabIdx;
+    const isLearned = appState.learnedVocab.includes(v.key);
+    return `<button type="button" class="vocab-chip ${isAct ? `is-active` : isLearned ? `is-learned` : ``}" onclick="selectVocab(${i})">${v.word}</button>`;
+  }).join(``);
+}
+
+function selectVocab(idx) {
+  currentVocabIdx = idx;
+  const v = VOCAB_DATA[idx];
+  if (!v) return;
+  if (!appState.learnedVocab.includes(v.key)) {
+    appState.learnedVocab.push(v.key);
+  }
+  if (appState.learnedVocab.length >= 6) awardSticker(`sunny_meadow`);
+
+  const titleEl = document.getElementById(`vocab-word-title`);
+  const exEl = document.getElementById(`vocab-example`);
+  const idEl = document.getElementById(`vocab-id`);
+  const progEl = document.getElementById(`vocab-progress-text`);
+  if (titleEl) titleEl.textContent = v.word.toUpperCase();
+  if (exEl) exEl.textContent = v.sentence;
+  if (idEl) idEl.textContent = v.id;
+  if (progEl) progEl.textContent = `Discovered: ${appState.learnedVocab.length} / ${VOCAB_DATA.length} weather words`;
+
+  const setOp = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute(`opacity`, val); };
+  const sky = document.getElementById(`ch1-sky`);
+  if (sky) sky.setAttribute(`fill`, v.sky);
+  setOp(`ch1-sun`, v.sun);
+  setOp(`ch1-clouds`, v.clouds);
+  setOp(`ch1-rain`, v.rain);
+  setOp(`ch1-snow`, v.snow);
+  setOp(`ch1-fog`, v.fog);
+  setOp(`ch1-lightning`, v.lightning);
+  setOp(`ch1-leaves`, v.leaves);
+
+  const tree = document.getElementById(`ch1-tree`);
+  if (tree) tree.setAttribute(`class`, v.leaves > 0 ? `anim-sway-strong` : `anim-sway`);
+  const therm = document.getElementById(`ch1-therm-fill`);
+  if (therm) {
+    therm.setAttribute(`y`, v.thermY);
+    therm.setAttribute(`height`, 66 - v.thermY);
+    therm.setAttribute(`fill`, v.thermColor);
+  }
+
+  renderVocabGrid();
+  updateCertificateStats();
+  playToneSfx(v.sfx);
+  speakText(`${v.word}. ${v.sentence}`);
+  saveState();
+}
+function speakCurrentVocab() {
+  const v = VOCAB_DATA[currentVocabIdx];
+  if (v) speakText(`${v.word}. ${v.sentence}`);
+}
+
+/* Page 4: Chapter 2 Scenes & Mini-Games */
+function renderCh2Tabs() {
+  const el = document.getElementById(`ch2-scene-tabs`);
+  if (!el) return;
+  el.innerHTML = CH2_SCENES.map((s, i) => `
+    <button type="button" class="${i === appState.ch2Scene ? `btn-primary` : `btn-secondary`}" style="min-height:38px;padding:6px 12px;font-size:0.86rem;" onclick="selectCh2Scene(${i})">${s.label}</button>
+  `).join(``);
+}
+
+function selectCh2Scene(idx) {
+  appState.ch2Scene = idx;
+  const s = CH2_SCENES[idx];
+  if (!s) return;
+  const setOp = (id, v) => { const el = document.getElementById(id); if (el) el.setAttribute(`opacity`, v); };
+  const sky = document.getElementById(`ch2-sky`);
+  if (sky) sky.setAttribute(`fill`, s.sky);
+  const ground = document.getElementById(`ch2-ground`);
+  if (ground) ground.setAttribute(`fill`, s.ground);
+  setOp(`ch2-sun`, s.sun);
+  setOp(`ch2-cloud`, s.cloud);
+  setOp(`ch2-rain`, s.rain);
+  setOp(`ch2-snow`, s.snow);
+  setOp(`ch2-lightning`, s.lightning);
+  setOp(`ch2-kite`, s.kite);
+  setOp(`ch2-snowman`, s.snowman);
+  setOp(`ch2-umbrella`, s.umbrella);
+
+  const qa = document.getElementById(`ch2-qa-text`);
+  const note = document.getElementById(`ch2-safety-note`);
+  if (qa) qa.innerHTML = `<strong>Question:</strong> "What's the weather like?" — <strong>Answer:</strong> "${s.answer}"`;
+  if (note) note.textContent = s.safety;
+
+  renderCh2Tabs();
+  playToneSfx(s.sfx);
+  speakText(`What's the weather like? ${s.answer}`);
+}
+
+function renderSoundMysteryOptions() {
+  const el = document.getElementById(`sound-guess-options`);
+  if (!el) return;
+  el.innerHTML = SOUND_MYSTERIES.map((m) => `
+    <button type="button" class="btn-secondary" onclick="guessSound('${m.key}')">${m.label.split(` `)[0]}</button>
+  `).join(``);
+}
+function playSoundMystery() {
+  const m = SOUND_MYSTERIES[appState.soundMysteryIdx];
+  if (m) playToneSfx(m.sfx);
+}
+function newSoundMystery() {
+  appState.soundMysteryIdx = (appState.soundMysteryIdx + 1) % SOUND_MYSTERIES.length;
+  const fb = document.getElementById(`sound-guess-feedback`);
+  if (fb) { fb.className = `feedback-banner`; fb.textContent = `New sound ready! Press "Play Mystery Sound"!`; }
+  playSoundMystery();
+}
+function guessSound(key) {
+  const m = SOUND_MYSTERIES[appState.soundMysteryIdx];
+  const fb = document.getElementById(`sound-guess-feedback`);
+  if (!m || !fb) return;
+  if (key === m.key) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Wonderful! That was ${m.label}!`;
+    awardSticker(`weather_detective`);
+    speakText(`Great job! It's ${m.key}!`);
+  } else {
+    fb.className = `feedback-banner is-try`;
+    fb.textContent = `Listen again and try another weather!`;
+  }
+}
+
+function renderDetective() {
+  const item = DETECTIVE_CLUES[appState.detectiveIdx];
+  const clueEl = document.getElementById(`detective-clue`);
+  const optsEl = document.getElementById(`detective-options`);
+  if (clueEl && item) clueEl.textContent = `Clue: "${item.clue}"`;
+  if (optsEl) {
+    optsEl.innerHTML = [`Sunny`, `Rainy`, `Windy`, `Snowy`, `Stormy`].map((w) => `
+      <button type="button" class="btn-secondary" style="min-height:38px;padding:6px 12px;" onclick="guessDetective('${w}')">${w}</button>
+    `).join(``);
+  }
+}
+function guessDetective(word) {
+  const item = DETECTIVE_CLUES[appState.detectiveIdx];
+  const fb = document.getElementById(`detective-feedback`);
+  if (!item || !fb) return;
+  if (word === item.answer) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Great weather detective! It's ${word}!`;
+    playToneSfx(`success`);
+    appState.detectiveIdx = (appState.detectiveIdx + 1) % DETECTIVE_CLUES.length;
+    setTimeout(renderDetective, 1100);
+  } else {
+    fb.className = `feedback-banner is-try`;
+    fb.textContent = `Not quite — read the clue again!`;
+  }
+}
+
+/* Page 5: Chapter 3 Weather Machine */
+function activateWeatherMachine(type) {
+  appState.machineWeather = type;
+  document.querySelectorAll(`.machine-btn`).forEach((b) => b.classList.remove(`is-active`));
+  const activeBtn = document.getElementById(`wm-btn-${type}`);
+  if (activeBtn) activeBtn.classList.add(`is-active`);
+
+  const setOp = (id, v) => { const el = document.getElementById(id); if (el) el.setAttribute(`opacity`, v); };
+  const sky = document.getElementById(`wm-sky`);
+  const ground = document.getElementById(`wm-ground`);
+  const tree = document.getElementById(`wm-tree`);
+  const react = document.getElementById(`wm-reaction`);
+
+  const cfgs = {
+    sunny: { sky: `url(#sky-sunny-grad)`, ground: `var(--meadow-mid)`, sun: 1, clouds: 0.25, rain: 0, snow: 0, lightning: 0, puddle: 0, umbrella: 0, snowman: 0, kite: 0, sfx: `birds`, msg: `"Wow! Sunlight shines everywhere! It's sunny!"` },
+    cloudy: { sky: `var(--rain-sky)`, ground: `var(--meadow-mid)`, sun: 0, clouds: 1, rain: 0, snow: 0, lightning: 0, puddle: 0, umbrella: 0, snowman: 0, kite: 0, sfx: `chime`, msg: `"Look up! Fluffy clouds cover the sky! It's cloudy!"` },
+    rainy: { sky: `url(#sky-rain-grad)`, ground: `var(--meadow-deep)`, sun: 0, clouds: 0.95, rain: 1, snow: 0, lightning: 0, puddle: 0.85, umbrella: 1, snowman: 0, kite: 0, sfx: `rain`, msg: `"Splash! Rain is falling and puddles appear! It's rainy!"` },
+    windy: { sky: `url(#sky-sunny-grad)`, ground: `var(--meadow-light)`, sun: 0.7, clouds: 0.7, rain: 0, snow: 0, lightning: 0, puddle: 0, umbrella: 0, snowman: 0, kite: 1, sfx: `wind`, msg: `"Whoosh! The trees sway and kites fly! It's windy!"` },
+    snowy: { sky: `url(#sky-snow-grad)`, ground: `var(--snow-hill)`, sun: 0, clouds: 0.8, rain: 0, snow: 1, lightning: 0, puddle: 0, umbrella: 0, snowman: 1, kite: 0, sfx: `chime`, msg: `"Brrr! Soft snow covers the ground and a snowman appears! It's snowy!"` },
+    stormy: { sky: `url(#sky-storm-grad)`, ground: `var(--storm-cloud)`, sun: 0, clouds: 1, rain: 1, snow: 0, lightning: 1, puddle: 0.9, umbrella: 0, snowman: 0, kite: 0, sfx: `thunder`, msg: `"Boom! Dark clouds and lightning flash! It's stormy!"` }
+  };
+  const c = cfgs[type];
+  if (!c) return;
+  if (sky) sky.setAttribute(`fill`, c.sky);
+  if (ground) ground.setAttribute(`fill`, c.ground);
+  if (tree) tree.setAttribute(`class`, (type === `windy` || type === `stormy`) ? `anim-sway-strong` : `anim-sway`);
+  setOp(`wm-sun`, c.sun);
+  setOp(`wm-clouds`, c.clouds);
+  setOp(`wm-rain`, c.rain);
+  setOp(`wm-snow`, c.snow);
+  setOp(`wm-lightning`, c.lightning);
+  setOp(`wm-puddle`, c.puddle);
+  setOp(`wm-umbrella`, c.umbrella);
+  setOp(`wm-snowman`, c.snowman);
+  setOp(`wm-kite`, c.kite);
+
+  if (react) react.textContent = c.msg;
+  playToneSfx(c.sfx);
+  speakText(c.msg);
+}
+
+function checkWeatherMachineMission() {
+  const m = WEATHER_MACHINE_MISSIONS[appState.machineMissionIdx];
+  const fb = document.getElementById(`wm-mission-feedback`);
+  if (!m || !fb) return;
+  if (appState.machineWeather === m.target) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Excellent! You created ${m.target} weather!`;
+    awardSticker(`weather_wizard`);
+    speakText(`Awesome! You made it ${m.target}!`);
+  } else {
+    fb.className = `feedback-banner is-try`;
+    fb.textContent = `Right now it's ${appState.machineWeather}. Try pressing the ${m.target} lever!`;
+  }
+}
+
+function nextWeatherMachineMission() {
+  appState.machineMissionIdx = (appState.machineMissionIdx + 1) % WEATHER_MACHINE_MISSIONS.length;
+  const p = document.getElementById(`wm-mission-prompt`);
+  const fb = document.getElementById(`wm-mission-feedback`);
+  if (p) p.textContent = WEATHER_MACHINE_MISSIONS[appState.machineMissionIdx].prompt;
+  if (fb) { fb.className = `feedback-banner`; fb.textContent = `Pull the right lever, then press "Check My Weather"!`; }
+}
+
+/* Page 6: Chapter 4 Wardrobe & Dress-Up */
+function renderClothesGrid() {
+  const grid = document.getElementById(`clothes-grid`);
+  if (!grid) return;
+  grid.innerHTML = CLOTHING_ITEMS.map((c) => {
+    const worn = appState.wornClothes.includes(c.id);
+    return `<div class="cloth-item ${worn ? `is-worn` : ``}" draggable="true" ondragstart="dragCloth(event, '${c.id}')" onclick="toggleCloth('${c.id}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){toggleCloth('${c.id}');}">${c.name}</div>`;
+  }).join(``);
+  updateDressVisuals();
+}
+
+function dragCloth(ev, id) {
+  if (ev && ev.dataTransfer) ev.dataTransfer.setData(`text/plain`, id);
+}
+function allowDrop(ev) { ev.preventDefault(); }
+function dropCloth(ev) {
+  ev.preventDefault();
+  if (!ev.dataTransfer) return;
+  const id = ev.dataTransfer.getData(`text/plain`);
+  if (id && !appState.wornClothes.includes(id)) {
+    toggleCloth(id);
+  }
+}
+
+function toggleCloth(id) {
+  const idx = appState.wornClothes.indexOf(id);
+  if (idx >= 0) {
+    appState.wornClothes.splice(idx, 1);
+  } else {
+    appState.wornClothes.push(id);
+    const item = CLOTHING_ITEMS.find((c) => c.id === id);
+    if (item) speakText(item.name);
+  }
+  playToneSfx(`chime`);
+  renderClothesGrid();
+  checkDressMission();
+  saveState();
+}
+
+function updateDressVisuals() {
+  const ids = [`tshirt`, `shorts`, `sunglasses`, `boots`, `sandals`, `gloves`, `sweater`, `jacket`, `raincoat`, `hat`, `scarf`, `umbrella`];
+  ids.forEach((id) => {
+    const el = document.getElementById(`wear-${id}`);
+    if (el) el.setAttribute(`opacity`, appState.wornClothes.includes(id) ? `1` : `0`);
+  });
+  const txt = document.getElementById(`worn-list-text`);
+  if (txt) {
+    const names = appState.wornClothes.map((w) => {
+      const f = CLOTHING_ITEMS.find((c) => c.id === w);
+      return f ? f.name : w;
+    });
+    txt.textContent = names.length ? `Wearing: ${names.join(`, `)}` : `Wearing: Tap clothes to dress up!`;
+  }
+}
+
+function checkDressMission() {
+  const m = DRESS_MISSIONS[appState.dressMissionIdx];
+  const fb = document.getElementById(`dressup-feedback`);
+  if (!m || !fb) return;
+  const ok = m.needed.every((n) => appState.wornClothes.includes(n));
+  if (ok) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Wonderful outfit! "${m.expr}"`;
+    awardSticker(`wardrobe_star`);
+    speakText(`Great choice! ${m.expr}`);
+  } else {
+    fb.className = `feedback-banner`;
+    fb.textContent = `Need: ${m.needed.join(` + `)} for this weather!`;
+  }
+}
+
+function nextDressMission() {
+  appState.dressMissionIdx = (appState.dressMissionIdx + 1) % DRESS_MISSIONS.length;
+  const m = DRESS_MISSIONS[appState.dressMissionIdx];
+  const lbl = document.getElementById(`dressup-mission-label`);
+  const q = document.getElementById(`dressup-mission-question`);
+  const ex = document.getElementById(`dressup-expression`);
+  if (lbl) lbl.textContent = m.title;
+  if (q) q.textContent = `"${m.q}"`;
+  if (ex) ex.textContent = `Expression: "${m.expr}"`;
+  resetClothes();
+}
+
+function resetClothes() {
+  appState.wornClothes = [];
+  renderClothesGrid();
+  const fb = document.getElementById(`dressup-feedback`);
+  if (fb) { fb.className = `feedback-banner`; fb.textContent = `Drag or click clothes onto your companion!`; }
+  saveState();
+}
+
+/* Page 7: Chapter 5 Forecast Studio */
+function playForecastChallenge() {
+  const c = FORECAST_CHALLENGES[appState.forecastTargetIdx];
+  if (c) speakText(c.text);
+}
+function newForecastChallenge() {
+  appState.forecastTargetIdx = (appState.forecastTargetIdx + 1) % FORECAST_CHALLENGES.length;
+  const fb = document.getElementById(`forecast-map-feedback`);
+  if (fb) { fb.className = `feedback-banner`; fb.textContent = `New report ready! Listen and click the matching town!`; }
+  playForecastChallenge();
+}
+function selectForecastTown(townKey) {
+  const c = FORECAST_CHALLENGES[appState.forecastTargetIdx];
+  const fb = document.getElementById(`forecast-map-feedback`);
+  if (!c || !fb) return;
+  if (townKey === c.town) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Spot on! That report was about ${townKey.replace(`_`, ` `)}!`;
+    awardSticker(`tv_reporter`);
+    speakText(`Great weather report!`);
+  } else {
+    fb.className = `feedback-banner is-try`;
+    fb.textContent = `Not that town — listen to the report again!`;
+  }
+}
+
+function updateReporterPreview() {
+  const prev = document.getElementById(`reporter-preview`);
+  if (!prev) return;
+  if (appState.level === `A1`) {
+    const w = document.getElementById(`rep-weather`)?.value || `sunny and warm`;
+    const p = document.getElementById(`rep-place`)?.value || `Little Town`;
+    prev.textContent = `"Hello, everyone! Today, the weather is ${w}. It is great in ${p}. Thank you!"`;
+  } else {
+    const txt = document.getElementById(`rep-custom`)?.value || `Hello, everyone!`;
+    prev.textContent = `"${txt}"`;
+  }
+}
+
+function broadcastMyReport() {
+  const prev = document.getElementById(`reporter-preview`);
+  const fb = document.getElementById(`reporter-feedback`);
+  if (prev) speakText(prev.textContent);
+  awardSticker(`tv_reporter`);
+  if (fb) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Bravo! Your live TV forecast is on the air!`;
+  }
+}
+
+function startSpeakingPractice() {
+  const fb = document.getElementById(`reporter-feedback`);
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRec) {
+    try {
+      const rec = new SpeechRec();
+      rec.lang = `en-US`;
+      if (fb) { fb.className = `feedback-banner`; fb.textContent = `Listening... read your teleprompter aloud!`; }
+      rec.onresult = (ev) => {
+        const heard = ev.results?.[0]?.[0]?.transcript || ``;
+        if (fb) {
+          fb.className = `feedback-banner is-success`;
+          fb.textContent = `Heard: "${heard}" — Wonderful speaking!`;
+        }
+        awardSticker(`tv_reporter`);
+      };
+      rec.onerror = () => {
+        if (fb) {
+          fb.className = `feedback-banner is-try`;
+          fb.textContent = `Read your report out loud 3 times, then press Broadcast!`;
+        }
+      };
+      rec.start();
+      return;
+    } catch (e) {}
+  }
+  if (fb) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Speaking Practice: Read your teleprompter aloud clearly, then press Broadcast!`;
+  }
+  speakText(`Read your weather report out loud now!`);
+}
+
+/* Page 8: Chapters 6 & 7 */
+function renderWorldPlaces() {
+  const btns = document.getElementById(`world-place-btns`);
+  if (!btns) return;
+  btns.innerHTML = WORLD_PLACES.map((p, i) => `
+    <button type="button" class="${i === appState.worldPlaceIdx ? `btn-primary` : `btn-secondary`}" style="min-height:38px;padding:6px 12px;font-size:0.85rem;" onclick="selectWorldPlace(${i})">${p.name}</button>
+  `).join(``);
+}
+function selectWorldPlace(idx) {
+  appState.worldPlaceIdx = idx;
+  const p = WORLD_PLACES[idx];
+  const n = document.getElementById(`world-place-name`);
+  const s = document.getElementById(`world-place-sentence`);
+  if (n && p) n.textContent = p.name;
+  if (s && p) s.textContent = `"${p.sentence}"`;
+  renderWorldPlaces();
+  if (p) speakText(p.sentence);
+}
+function speakWorldPlace() {
+  const p = WORLD_PLACES[appState.worldPlaceIdx];
+  if (p) speakText(p.sentence);
+}
+
+function renderCompareQuestion() {
+  const c = COMPARE_QUESTIONS[appState.compareIdx];
+  const qEl = document.getElementById(`compare-question`);
+  const optEl = document.getElementById(`compare-options`);
+  if (qEl && c) qEl.textContent = c.q;
+  if (optEl && c) {
+    optEl.innerHTML = `
+      <button type="button" class="btn-secondary" onclick="answerCompare('${c.a}')">${c.a}</button>
+      <button type="button" class="btn-secondary" onclick="answerCompare('${c.b}')">${c.b}</button>
+    `;
+  }
+}
+function answerCompare(choice) {
+  const c = COMPARE_QUESTIONS[appState.compareIdx];
+  const fb = document.getElementById(`compare-feedback`);
+  if (!c || !fb) return;
+  if (choice === c.correct) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Yes! ${c.correct} is right!`;
+    awardSticker(`world_traveler`);
+    playToneSfx(`success`);
+    appState.compareIdx = (appState.compareIdx + 1) % COMPARE_QUESTIONS.length;
+    setTimeout(renderCompareQuestion, 1100);
+  } else {
+    fb.className = `feedback-banner is-try`;
+    fb.textContent = `Think about the temperature and try again!`;
+  }
+}
+
+function renderStoryTimeline() {
+  const el = document.getElementById(`story-timeline-btns`);
+  if (!el) return;
+  el.innerHTML = CH7_SCENES.map((s, i) => `
+    <button type="button" class="${i === appState.storySceneIdx ? `btn-primary` : `btn-secondary`}" style="min-height:36px;padding:4px 10px;font-size:0.82rem;" onclick="selectStoryScene(${i})">${s.label}</button>
+  `).join(``);
+}
+function selectStoryScene(idx) {
+  appState.storySceneIdx = idx;
+  const s = CH7_SCENES[idx];
+  if (!s) return;
+  const setOp = (id, v) => { const el = document.getElementById(id); if (el) el.setAttribute(`opacity`, v); };
+  const sky = document.getElementById(`ch7-sky`);
+  if (sky) sky.setAttribute(`fill`, s.sky);
+  setOp(`ch7-sun`, s.sun);
+  setOp(`ch7-clouds`, s.clouds);
+  setOp(`ch7-rain`, s.rain);
+  setOp(`ch7-rainbow`, s.rainbow);
+  const tree = document.getElementById(`ch7-tree`);
+  if (tree) tree.setAttribute(`class`, s.swayStrong ? `anim-sway-strong` : `anim-sway`);
+  const txt = document.getElementById(`ch7-story-text`);
+  if (txt) txt.textContent = s.text;
+  renderStoryTimeline();
+  playToneSfx(s.sfx);
+  speakText(s.text);
+}
+function speakStoryScene() {
+  const s = CH7_SCENES[appState.storySceneIdx];
+  if (s) speakText(s.text);
+}
+
+function renderNextEventGame() {
+  const item = NEXT_EVENTS[appState.nextEventIdx];
+  const p = document.getElementById(`next-event-prompt`);
+  const o = document.getElementById(`next-event-options`);
+  if (p && item) p.textContent = item.prompt;
+  if (o && item) {
+    o.innerHTML = item.choices.map((ch) => `
+      <button type="button" class="btn-secondary" style="font-size:0.88rem;" onclick="answerNextEvent('${ch}')">${ch}</button>
+    `).join(``);
+  }
+}
+function answerNextEvent(ch) {
+  const item = NEXT_EVENTS[appState.nextEventIdx];
+  const fb = document.getElementById(`next-event-feedback`);
+  if (!item || !fb) return;
+  if (ch === item.correct) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Right! ${ch}!`;
+    playToneSfx(`success`);
+    appState.nextEventIdx = (appState.nextEventIdx + 1) % NEXT_EVENTS.length;
+    setTimeout(renderNextEventGame, 1100);
+  } else {
+    fb.className = `feedback-banner is-try`;
+    fb.textContent = `Look at the sky clue and try again!`;
+  }
+}
+
+/* Page 9: Chat & Mini-Games */
+function renderChat() {
+  const win = document.getElementById(`chat-window`);
+  const chEl = document.getElementById(`chat-choices`);
+  const step = CHAT_SCRIPT[appState.chatStep];
+  if (!win || !chEl) return;
+
+  if (appState.chatLog.length === 0 && step) {
+    appState.chatLog = [...step.messages];
+  }
+  win.innerHTML = appState.chatLog.map((m) => `
+    <div class="chat-row ${m.who === `You` ? `is-right` : ``}">
+      <div class="chat-avatar">${m.who.slice(0, 2).toUpperCase()}</div>
+      <div class="chat-bubble" onclick="speakText('${m.text.replace(/'/g, ``)}')">
+        <strong style="font-size:0.75rem;display:block;color:var(--tertiary);">${m.who}</strong>
+        ${m.text}
+      </div>
+    </div>
+  `).join(``);
+  win.scrollTop = win.scrollHeight;
+
+  if (step) {
+    chEl.innerHTML = step.choices.map((c, idx) => `
+      <button type="button" class="btn-secondary" style="justify-content:flex-start;" onclick="pickChatReply(${idx})">${c.text}</button>
+    `).join(``);
+  } else {
+    chEl.innerHTML = `<div class="feedback-banner is-success">Chat complete! Restart to practice again.</div>`;
+  }
+}
+
+function pickChatReply(idx) {
+  const step = CHAT_SCRIPT[appState.chatStep];
+  if (!step) return;
+  const c = step.choices[idx];
+  appState.chatLog.push({ who: `You`, text: c.text });
+  appState.chatLog.push({ who: `Oliver`, text: c.reply });
+  speakText(`${c.text}. ${c.reply}`);
+  if (c.ok) {
+    playToneSfx(`success`);
+    appState.chatStep++;
+    if (CHAT_SCRIPT[appState.chatStep]) {
+      appState.chatLog.push(...CHAT_SCRIPT[appState.chatStep].messages);
+    }
+  }
+  renderChat();
+}
+
+function resetChat() {
+  appState.chatStep = 0;
+  appState.chatLog = [];
+  renderChat();
+}
+
+function renderSentenceGame() {
+  const s = SENTENCE_GAMES[appState.sentenceIdx];
+  const p = document.getElementById(`sentence-prompt`);
+  const o = document.getElementById(`sentence-options`);
+  if (p && s) p.textContent = `"${s.prompt}"`;
+  if (o && s) {
+    o.innerHTML = s.opts.map((w) => `
+      <button type="button" class="btn-secondary" onclick="answerSentence('${w}')">${w}</button>
+    `).join(``);
+  }
+}
+function answerSentence(w) {
+  const s = SENTENCE_GAMES[appState.sentenceIdx];
+  const fb = document.getElementById(`sentence-feedback`);
+  if (!s || !fb) return;
+  if (w === s.correct) {
+    fb.className = `feedback-banner is-success`;
+    fb.textContent = `Awesome! "${s.prompt.replace(`______`, w)}"`;
+    playToneSfx(`success`);
+    speakText(s.prompt.replace(`______`, w));
+    appState.sentenceIdx = (appState.sentenceIdx + 1) % SENTENCE_GAMES.length;
+    setTimeout(renderSentenceGame, 1200);
+  } else {
+    fb.className = `feedback-banner is-try`;
+    fb.textContent = `Not quite! Read the clue in the sentence and try again.`;
+  }
+}
+
+/* Memory Game */
+let memoryCards = [];
+let flippedIndices = [];
+let matchedPairs = 0;
+
+function initMemoryGame() {
+  const pairs = [`Sunny`, `Rainy`, `Windy`, `Snowy`, `Cloudy`, `Rainbow`];
+  memoryCards = [...pairs, ...pairs].sort(() => Math.random() - 0.5).map((word, id) => ({ id, word, flipped: false, matched: false }));
+  flippedIndices = [];
+  matchedPairs = 0;
+  renderMemoryGrid();
+  const fb = document.getElementById(`memory-feedback`);
+  if (fb) { fb.className = `feedback-banner`; fb.textContent = `Flip two cards to find matching pairs!`; }
+}
+
+function renderMemoryGrid() {
+  const grid = document.getElementById(`memory-grid`);
+  if (!grid) return;
+  grid.innerHTML = memoryCards.map((c, i) => `
+    <button type="button" class="memory-card ${c.matched ? `is-matched` : c.flipped ? `is-flipped` : ``}" onclick="flipMemoryCard(${i})">
+      ${c.flipped || c.matched ? c.word : `?`}
+    </button>
+  `).join(``);
+}
+
+function flipMemoryCard(i) {
+  const card = memoryCards[i];
+  if (!card || card.flipped || card.matched || flippedIndices.length >= 2) return;
+  card.flipped = true;
+  flippedIndices.push(i);
+  speakText(card.word);
+  renderMemoryGrid();
+
+  if (flippedIndices.length === 2) {
+    const [a, b] = flippedIndices;
+    const fb = document.getElementById(`memory-feedback`);
+    if (memoryCards[a].word === memoryCards[b].word) {
+      memoryCards[a].matched = true;
+      memoryCards[b].matched = true;
+      flippedIndices = [];
+      matchedPairs++;
+      playToneSfx(`success`);
+      renderMemoryGrid();
+      if (fb) {
+        fb.className = `feedback-banner is-success`;
+        fb.textContent = matchedPairs === 6 ? `You matched all 6 weather pairs!` : `Match found: ${memoryCards[a].word}!`;
+      }
+    } else {
+      setTimeout(() => {
+        memoryCards[a].flipped = false;
+        memoryCards[b].flipped = false;
+        flippedIndices = [];
+        renderMemoryGrid();
+      }, 750);
+    }
+  }
+}
+
+/* Page 10: Weather Journal & Certificate */
+function getJournalSentence() {
+  const day = document.getElementById(`j-day`)?.value || `Monday`;
+  const w = document.getElementById(`j-weather`)?.value || `sunny`;
+  const feel = document.getElementById(`j-feel`)?.value || `happy`;
+  const wear = document.getElementById(`j-wear`)?.value || `a T-shirt`;
+  return `Today is ${day}. It's ${w} today. I feel ${feel}. I wear ${wear}.`;
+}
+
+function speakJournalPreview() {
+  speakText(getJournalSentence());
+}
+
+function saveJournalEntry() {
+  const sentence = getJournalSentence();
+  appState.journalEntries.unshift({ date: new Date().toLocaleDateString(), text: sentence });
+  if (appState.journalEntries.length > 5) appState.journalEntries.pop();
+  awardSticker(`journal_keeper`);
+  renderJournalHistory();
+  speakText(`Journal saved! ${sentence}`);
+  saveState();
+}
+
+function renderJournalHistory() {
+  const list = document.getElementById(`journal-list`);
+  if (!list) return;
+  if (appState.journalEntries.length === 0) {
+    list.innerHTML = `<p class="story-prose" style="font-size:0.9rem;">No entries yet. Look outside and save today's weather!</p>`;
+    return;
+  }
+  list.innerHTML = appState.journalEntries.map((e) => `
+    <div class="card" style="padding:8px 12px;background:var(--cream-paper);">
+      <strong style="font-family:var(--font-label);font-size:0.75rem;color:var(--tertiary);">${e.date}</strong>
+      <div style="font-size:0.92rem;">${e.text}</div>
+    </div>
+  `).join(``);
+}
+
+function updateCertificateName() {
+  const val = document.getElementById(`j-name`)?.value || `Little Explorer`;
+  appState.studentName = val;
+  const el = document.getElementById(`cert-student-name`);
+  if (el) el.textContent = val;
+  saveState();
+}
+
+function updateCertificateStats() {
+  const el = document.getElementById(`cert-stats`);
+  if (el) {
+    el.textContent = `Words Learned: ${appState.learnedVocab.length}/${VOCAB_DATA.length} · Stickers Earned: ${appState.stickers.length}/${STICKERS.length}`;
+  }
+}
+
+function downloadCertificate() {
+  const text = `========================================\n  THE MAGICAL WEATHER JOURNEY\n  OFFICIAL WEATHER EXPLORER CERTIFICATE\n========================================\n\nAwarded to: ${appState.studentName}\nCompanion: ${appState.companion}\nWords Learned: ${appState.learnedVocab.length}/${VOCAB_DATA.length}\nStickers Earned: ${appState.stickers.length}/${STICKERS.length}\n\nKeep observing the sky and practicing English every day!\n`;
+  if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+    window.notebookAppApi.triggerFileDownload({
+      content: text,
+      contentType: `text/plain`,
+      encoding: `UTF-8`,
+      filename: `weather-explorer-certificate.txt`
+    });
+  } else {
+    const blob = new Blob([text], { type: `text/plain` });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement(`a`);
+    a.href = url;
+    a.download = `weather-explorer-certificate.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+}
+
+function resetAllProgress(btn) {
+  if (btn.dataset.armed !== `true`) {
+    btn.dataset.armed = `true`;
+    btn.textContent = `Click again to reset`;
+    return;
+  }
+  btn.dataset.armed = `false`;
+  btn.textContent = `Reset Progress`;
+  appState.page = 0;
+  appState.stickers = [];
+  appState.learnedVocab = [`sunny`];
+  appState.journalEntries = [];
+  appState.wornClothes = [`tshirt`, `shorts`];
+  renderStickers();
+  renderVocabGrid();
+  renderClothesGrid();
+  renderJournalHistory();
+  updateCertificateStats();
+  goToPage(0);
+  saveState();
+}
+
+/* Boot */
+async function initStorybook() {
+  await loadState();
+  chooseCompanion(appState.companion);
+  setLevel(appState.level);
+
+  const nameInput = document.getElementById(`j-name`);
+  if (nameInput) nameInput.value = appState.studentName;
+  updateCertificateName();
+
+  renderStickers();
+  renderVocabGrid();
+  selectVocab(0);
+  renderCh2Tabs();
+  renderSoundMysteryOptions();
+  renderDetective();
+  renderClothesGrid();
+  renderWorldPlaces();
+  renderCompareQuestion();
+  renderStoryTimeline();
+  renderNextEventGame();
+  renderChat();
+  renderSentenceGame();
+  initMemoryGame();
+  renderJournalHistory();
+  updateCertificateStats();
+  goToPage(appState.page);
+
+  if (window.lucide) lucide.createIcons();
+  if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+    window.notebookAppApi.notifyAppReady();
+  }
+}
+
+document.addEventListener(`DOMContentLoaded`, initStorybook);
+</script>
+</body>
+</html>
+Menampilkan Petualangan_Cuaca_Ajaib (1).html.
